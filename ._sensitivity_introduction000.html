@@ -1,0 +1,939 @@
+<!DOCTYPE HTML>
+<!--
+Automatically generated HTML file from DocOnce source
+(https://github.com/hplgit/doconce/)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="A practical introduction to sensitivity analysis">
+
+<title>A practical introduction to sensitivity analysis</title>
+
+<!-- Bootstrap style: bootstrap_bluegray -->
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.rawgit.com/hplgit/doconce/master/bundled/html_styles/style_bootstrap/css/bootstrap_bluegray.css" rel="stylesheet">
+<!-- not necessary
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+-->
+
+<style type="text/css">
+
+/* Add scrollbar to dropdown menus in bootstrap navigation bar */
+.dropdown-menu {
+   height: auto;
+   max-height: 400px;
+   overflow-x: hidden;
+}
+
+/* Adds an invisible element before each target to offset for the navigation
+   bar */
+.anchor::before {
+  content:"";
+  display:block;
+  height:50px;      /* fixed header height for style bootstrap_bluegray */
+  margin:-50px 0 0; /* negative fixed header height */
+}
+</style>
+
+
+</head>
+
+<!-- tocinfo
+{'highest level': 1,
+ 'sections': [('Table of contents',
+               1,
+               'table_of_contents',
+               'table_of_contents'),
+              (u'Introduction', 1, u'sec:introduction', u'sec:introduction'),
+              (u'A simple linear model', 1, None, '___sec1'),
+              (u'Scatterplots versus derivatives', 1, None, '___sec2'),
+              (u'Normalized derivatives and standardized regression coefficients',
+               1,
+               None,
+               '___sec3'),
+              (u'Normalized derivatives', 2, None, '___sec4'),
+              (u'Linear regression', 2, None, '___sec5'),
+              (u'Normalized derivatives vs SRCs', 1, None, '___sec6'),
+              (u'Polynomial chaos expansion', 1, None, '___sec7'),
+              (u'Conditional variances', 1, None, '___sec8'),
+              (u'References', 1, None, '___sec9')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "none"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<!-- newcommands.tex -->
+$$
+\newcommand{\partd}[2]{\frac{\partial #1}{\partial #2}}
+\renewcommand{\eqref}[1]{\rm{Eq}.~(\ref{#1})}
+$$
+
+
+
+
+    
+<!-- Bootstrap navigation bar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="sensitivity_introduction.html">A practical introduction to sensitivity analysis</a>
+  </div>
+
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+     <!-- navigation toc: --> <li><a href="#table_of_contents" style="font-size: 80%;"><b>Table of contents</b></a></li>
+     <!-- navigation toc: --> <li><a href="#sec:introduction" style="font-size: 80%;"><b>Introduction</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec1" style="font-size: 80%;"><b>A simple linear model</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec2" style="font-size: 80%;"><b>Scatterplots versus derivatives</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec3" style="font-size: 80%;"><b>Normalized derivatives and standardized regression coefficients</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec4" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Normalized derivatives</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec5" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Linear regression</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec6" style="font-size: 80%;"><b>Normalized derivatives vs SRCs</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec7" style="font-size: 80%;"><b>Polynomial chaos expansion</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec8" style="font-size: 80%;"><b>Conditional variances</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec9" style="font-size: 80%;"><b>References</b></a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</div> <!-- end of navigation bar -->
+
+<div class="container">
+
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
+
+<a name="part0000"></a>
+<!-- navigation buttons at the bottom of the page -->
+<ul class="pagination">
+  <li class="active"><a href="._sensitivity_introduction000.html">1</a></li>
+</ul>
+<!-- ------------------- main content ---------------------- -->
+
+
+
+<div class="jumbotron">
+<center><h1>A practical introduction to sensitivity analysis</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Leif Rune Hellevik -->
+
+<center>
+<b>Leif Rune Hellevik</b> 
+</center>
+
+<p>
+<!-- institution -->
+
+<center><b>Department of Structural Engineering, NTNU</b></center>
+<br>
+<p>
+<center><h4>Feb 1, 2017</h4></center> <!-- date -->
+<br>
+<p>
+</div> <!-- end jumbotron -->
+
+<h1 id="table_of_contents">Table of contents</h2>
+
+<p>
+<a href="#sec:introduction"> Introduction </a><br>
+<a href="#___sec1"> A simple linear model </a><br>
+<a href="#___sec2"> Scatterplots versus derivatives </a><br>
+<a href="#___sec3"> Normalized derivatives and standardized regression coefficients </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec4"> Normalized derivatives </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec5"> Linear regression </a><br>
+<a href="#___sec6"> Normalized derivatives vs SRCs </a><br>
+<a href="#___sec7"> Polynomial chaos expansion </a><br>
+<a href="#___sec8"> Conditional variances </a><br>
+<a href="#___sec9"> References </a><br>
+</p>
+
+<h1 id="sec:introduction" class="anchor">Introduction</h1>
+
+<p>
+This practical introduction to sensitivity analysis is based on the
+presentation and examples found in <a href="#saltelli_global_2008">[1]</a>. To give
+the reader an even better hands on expericence of the topic, we have
+integrated the computations in a python notebook format.
+
+<p>
+Many sensitivity anlyses reported in the literature are based on
+derviatives at set point or point of interest. Indeed such apporaches
+are based on the fact that the derivative of \( \partial Y_i/\partial
+X_j \) of quantity of interest \( Y_i \) as a function of an input variable
+\( X_j \) can be thought of as the mathematical definition of the
+sensitivity of \( Y_i \) versus \( X_j \).
+
+<p>
+However, what is important to keep in mind is that local derivatives
+are only informative at the set point in the parameter space at which
+they are computed, and do not provide information for the rest of the
+parameter space. Naturally, such a linearization will matter little
+for linear models, but for general, nonlinear models, care must be
+taken.  In particular this is important in situations when the input
+parameters are uncertain.
+
+<p>
+We will therefore make use of methods based on the exploration of the
+input parameter space by judiciously selecting samples in that space,
+which will result in more robust an informative sensitivity measures,
+than what result from a local derivative at the center of the
+parameter space.
+
+<p>
+However, to introduce the methods of sensitivity analysis, we shall
+start from derivatices and illustrate them on a very simple linear
+model.
+
+<h1 id="___sec1" class="anchor">A simple linear model </h1>
+
+<p>
+As an simple linear model example consider:
+
+$$
+\begin{equation}
+Y = \sum_{i=1}^{r} \Omega_i \, Z_i
+\tag{1}
+\end{equation}
+$$
+
+<p>
+where the input factors are \( \mathbf{X} = (\Omega_1, \Omega_2, \ldots,
+\Omega_r, Z_1, Z_2, \ldots, Z_r) \). For simplicity we assume that the
+model output \( Y \) of <a href="#mjx-eqn-1">(1)</a> is a single variable and
+that the \( \Omega s \) are fixed coefficients or weights.
+
+$$
+\begin{equation}
+ \Omega_1=\Omega_2=\ldots=\text{constant}
+\tag{2}
+\end{equation}
+$$
+
+<p>
+Consequently, the true factors of <a href="#mjx-eqn-1">(1)</a> are just
+\( (Z_1, Z_2, \ldots, Z_r) \). The individual variables
+\( Z_i \) are taken to normally distributed with mean zero
+
+$$
+\begin{equation} Z_i \sim N(0, \sigma_{Z_i}), \qquad i=1,2, \ldots, r
+\tag{3} \end{equation}
+$$
+
+<p>
+As the predicted value \( Y \) of the model in <a href="#mjx-eqn-1">(1)</a> is
+linear combination of normally distributed factors, it is easy to
+verify (see exercices in <a href="#saltelli_global_2008">[1]</a>) that \( Y \) also will
+be normally distributed with:
+$$
+\begin{equation}
+\bar{y} = \sum_{i=1}^{r} \Omega_i \; \bar{z}_i, \qquad \sigma_Y = \sqrt{\sum_{i=1}^{r} \Omega_i^2 \, \sigma_{Z_i}^2}
+\tag{4}	
+\end{equation}
+$$
+
+<p>
+Furthermore, we order the factors from the most certain to the less
+certain, i.e.:
+
+$$
+\begin{equation}
+ \sigma_{Z_1} <  \sigma_{Z_2} <  \ldots  <  \sigma_{Z_r}
+\label{}
+\end{equation}
+$$
+
+<h1 id="___sec2" class="anchor">Scatterplots versus derivatives </h1>
+
+<p>
+We have implemented the simple linear model in <a href="#mjx-eqn-1">(1)</a> in python as:
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">#  The linear model</span>
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">linear_model</span>(w,Z,N):
+    Y<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros(N)
+    <span style="color: #008000; font-weight: bold">if</span> (w<span style="color: #666666">.</span>size<span style="color: #666666">&gt;1</span>):
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(w)):
+            Y[:]<span style="color: #666666">+=</span>w[i]<span style="color: #666666">*</span>Z[i,:] <span style="color: #408080; font-style: italic">#+ Z[i,:]*Z[i,:]/5</span>
+    <span style="color: #008000; font-weight: bold">else</span>:
+        Y<span style="color: #666666">=</span>w<span style="color: #666666">*</span>Z
+
+    <span style="color: #008000; font-weight: bold">return</span> Y
+</pre></div>
+<p>
+To hold the mean and the standard deviation of all the input factors
+we use a numpy-array of size \( r\times 2 \), with one row per factor,
+where the first column holds the mean whereas the second column holds
+the standard deviation. The weights \( \Omega_{1\ldots r} \) are stored in a numpy-vector.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Set mean (column 0) and standard deviations (column 1) for each factor z. r factors=nr. rows</span>
+r<span style="color: #666666">=4</span> <span style="color: #408080; font-style: italic"># number of factors </span>
+zm<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((r,<span style="color: #666666">2</span>))
+zm[<span style="color: #666666">0</span>,<span style="color: #666666">1</span>]<span style="color: #666666">=1</span>
+zm[<span style="color: #666666">1</span>,<span style="color: #666666">1</span>]<span style="color: #666666">=2</span>
+zm[<span style="color: #666666">2</span>,<span style="color: #666666">1</span>]<span style="color: #666666">=3</span>
+zm[<span style="color: #666666">3</span>,<span style="color: #666666">1</span>]<span style="color: #666666">=4</span>
+
+<span style="color: #408080; font-style: italic"># Set the weigth</span>
+wc<span style="color: #666666">=2</span>
+w<span style="color: #666666">=</span>np<span style="color: #666666">.</span>ones(r)<span style="color: #666666">*</span>wc
+</pre></div>
+<p>
+We may now perform a Monte Carlo experiment on our model by generating \( N \) samples from the distributions of each factor and an input sample is thus produced:
+$$
+\begin{equation}
+\mathbf{Z} = \left [
+\begin{array}{cccc}
+Z_{1,1} & Z_{1,2}  & \ldots & Z_{1,N} \\
+Z_{2,1} & Z_{2,2}  & \ldots & Z_{2,N}\\
+\vdots & \vdots & \vdots & \vdots \\
+Z_{r,1} & Z_{r,2}  & \ldots & Z_{r,N}
+\end{array} 
+\right ]
+\tag{5}
+\end{equation}
+$$
+
+<p>
+We may the compute a value of \( Y \) from <a href="#mjx-eqn-1">(1)</a> for each
+column in <a href="#mjx-eqn-5">(5)</a> to produce a solution vector
+\( \mathbf{Y} \). Having sampled \( N \) values from each input factor we may
+produce \( r \) scatter plots, by projecting in turn the \( N \) values of
+\( \mathbf{Y} \) against the \( N \) values of each of the \( r \) input factors.
+
+$$
+\begin{equation}
+\mathbf{Y} = \left [
+\begin{array}{c}
+y_1 \\
+y_2 \\
+\vdots \\
+y_N
+\end{array}
+\right ]
+\tag{6}
+\end{equation}
+$$
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Genrate distributions for each element in z</span>
+N<span style="color: #666666">=500</span>
+Z<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros(shape<span style="color: #666666">=</span>(r,N))
+pdf<span style="color: #666666">=</span>[]
+<span style="color: #008000; font-weight: bold">for</span> i, z <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">enumerate</span>(zm):
+    pdf<span style="color: #666666">.</span>append(cp<span style="color: #666666">.</span>Normal(z[<span style="color: #666666">0</span>],z[<span style="color: #666666">1</span>]))
+    Z[i,:]<span style="color: #666666">=</span>pdf[i]<span style="color: #666666">.</span>sample(N)
+
+Y <span style="color: #666666">=</span> linear_model(w,Z,N)
+
+<span style="color: #408080; font-style: italic"># Scatter plots of data for visual inspection of sensitivity </span>
+plt<span style="color: #666666">.</span>figure()
+<span style="color: #008000; font-weight: bold">for</span> k <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(r):
+    plt<span style="color: #666666">.</span>subplot(<span style="color: #666666">2</span>,<span style="color: #666666">2</span>,k<span style="color: #666666">+1</span>)
+    plt<span style="color: #666666">.</span>plot(Z[k,:],Y[:],<span style="color: #BA2121">&#39;.&#39;</span>)
+    xlbl<span style="color: #666666">=</span><span style="color: #BA2121">&#39;Z&#39;</span><span style="color: #666666">+</span><span style="color: #008000">str</span>(k)
+    plt<span style="color: #666666">.</span>xlabel(xlbl)
+</pre></div>
+<p>
+Note that the assumption of independent factors \( Z_i \), we may sample
+each \( Z_i \) independently from their marginal distributions and store
+all the samples for all the factors \( Z_i \) in the the numpy array
+'Z[i,:]', where \( i \) corresponds to \( Z_i \) as:
+
+<p>
+
+<!-- code=text typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>pdf.append(pc.Normal(z[0],z[1]))
+    Z[i,:]=pdf[i].sample(N)
+</pre></div>
+<p>
+From the scatterplots generated by the python code above we
+intuitively get the impression that \( Y \) is more sensitive to \( Z_4 \)
+than to \( Z_3 \), and that \( Y \) is more sensitive to \( Z_3 \) than to \( Z_3 \),
+and that we may order the factors my influence on \( Y \) as:
+
+$$
+\begin{equation}
+Z_4 > Z_3 > Z_2 > Z_1 
+\tag{7}
+\end{equation}
+$$
+
+<p>
+Our intuitive notion of influence is based on that there is more shape
+(or better pattern) in the plot for \( Z_4 \) than for \( Z_3 \) and likewise.
+
+<p>
+For our simple linear model in <a href="#mjx-eqn-1">(1)</a> we are in the
+fortunate situation that we may compute the local derivatives analyticaly:
+$$
+\begin{equation}
+S_{Z_i}^{p} = \partd{Y}{Z_i} = \Omega_i
+\tag{8}
+\end{equation}
+$$
+
+<p>
+In our code example we set all the \( \Omega_i=2 \) for \( i=1,\ldots,4 \),
+and according to the local sensitivity meansure \( S_{Z_i}^{p} \) in
+<a href="#mjx-eqn-8">(8)</a> all the input factors $Z_i$s are equally important and
+independent of the variation of each factor. This measure is clearly
+at odds with the ranking of influence based on the scatterplots in
+<a href="#mjx-eqn-7">(7)</a> and is an indication of the usefullness of
+scatterplots in sensititivy analysis. However, the bidimensional
+scatterplots may in some cases be deceiving and lead to type II
+errors (i.e. failure to identify influential parameters). ref to Saltelli 2004...
+
+<p>
+Most sensitivity measures aim to preserve the rich information
+provided by the scatterplots in a condensed format. The challenge is
+how to rank the factors rapidly and automatically without having to
+inspect many scatterplots in situations with many input
+factors. Another challenge with scatterplots is that sensitivities for
+sets cannot be visualized, while luckily compact sensitivity measures may be
+defined in such cases.
+
+<h1 id="___sec3" class="anchor">Normalized derivatives and standardized regression coefficients </h1>
+
+<h2 id="___sec4" class="anchor">Normalized derivatives </h2>
+A simple way to improve the derivative sensitivity measure \( S_{Z_i}^{p} \) in
+<a href="#mjx-eqn-8">(8)</a> is to scale the input-output variables with their standard deviations:
+
+$$
+\begin{equation}
+S_{Z_i}^{\sigma} = \partd{Y/\sigma_Y}{Z_i/\sigma_{Z_i}} = \frac{\sigma_{Z_i}}{\sigma_{Y}} \; \partd{Y}{Z_i}
+\tag{9}
+\end{equation}
+$$
+
+<p>
+In case of our simple linear model <a href="#mjx-eqn-1">(1)</a> we get from
+<a href="#mjx-eqn-9">(9)</a>: 
+
+$$
+\begin{equation}
+\left (S_{Z_i}^{\sigma} \right)^2 = \left( \frac{\sigma_{Z_i}}{\sigma_{Y}}\right)^2 \; \left (\partd{Y}{Z_i}\right)^2 = \left( \frac{\sigma_{Z_i}\, \Omega_i}{\sigma_{Y}}\right)^2 \;  \qquad \textsf{which may be rearranged to:} \qquad \sigma_y^2 \, (S_{Z_i}^{\sigma})^2 = \left ( \Omega_{i} \sigma_{Y} \right )^2
+\tag{10}
+\end{equation}
+$$
+
+<p>
+Based on the linearity of our model we previously found  <a href="#mjx-eqn-4">(4)</a> which also yields:
+$$
+\begin{equation}
+ \sigma_Y^2 = \sum_{i=1}^{r} \left(\Omega_i^2 \, \sigma_{Z_i}\right)^2
+\tag{11}
+\end{equation}
+$$
+
+<p>
+As both <a href="#mjx-eqn-11">(11)</a> and <a href="#mjx-eqn-10">(10)</a> must hold simultaneously we get
+
+$$
+\begin{equation}
+\left (S_{Z_i}^{\sigma} \right)^2=1 
+\tag{12}
+\end{equation}
+$$
+
+<p>
+The normalized derivative measure of sensitivity in <a href="#mjx-eqn-9">(9)</a> is
+more convincing than <a href="#mjx-eqn-8">(8)</a>: first, as it involves both the
+weights \( \Omega_i \) and the factors \( Z_i \) in <a href="#mjx-eqn-1">(1)</a>;
+second as the measures are properly scaled and summarizes to one,
+which allows for an easy interpretation of the output sensitivity with
+respect to each of the input factors.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">#  Theoretical sensitivity indices</span>
+s_y<span style="color: #666666">=</span>np<span style="color: #666666">.</span>sqrt(np<span style="color: #666666">.</span>sum((w<span style="color: #666666">*</span>zm[:,<span style="color: #666666">1</span>])<span style="color: #666666">**2</span>))
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;s_y=&#39;</span>,s_y
+
+s<span style="color: #666666">=</span>w<span style="color: #666666">*</span>zm[:,<span style="color: #666666">1</span>]<span style="color: #666666">/</span>s_y
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;s=&#39;</span>,s, <span style="color: #BA2121">&#39;,   norm(s)=&#39;</span>,LA<span style="color: #666666">.</span>norm(s)
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;s^2=&#39;</span>,s<span style="color: #666666">**2</span>
+</pre></div>
+<p>
+Based on our samples from our samples of the input factors and the
+subsequent model evaluations, we may estimate the standard deviation
+of \( \mathbf{Y} \) and compute the relative error with respect to the
+theoretical value. You may change the number of sample above,
+i.e. \( N \), and see how \( N \) influence the estimates.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">#  Sensitivity indices based on sampled values</span>
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;std(Y)=&#39;</span>,np<span style="color: #666666">.</span>std(Y, <span style="color: #666666">0</span>), <span style="color: #BA2121">&#39;  rel.err=&#39;</span>, (np<span style="color: #666666">.</span>std(Y, <span style="color: #666666">0</span>)<span style="color: #666666">-</span>s_y)<span style="color: #666666">/</span>s_y
+<span style="color: #008000; font-weight: bold">print</span> np<span style="color: #666666">.</span>mean(Y,<span style="color: #666666">0</span>), np<span style="color: #666666">.</span>sqrt(np<span style="color: #666666">.</span>var(Y,<span style="color: #666666">0</span>))
+</pre></div>
+<p>
+Note that \( N \) is the size of our Monte Carlo experiment, corresponding
+to the number of times we have evaluated our simple linear model
+<a href="#mjx-eqn-1">(1)</a>. The evaluation of the model is normally the
+most computationally expensive part of the analysis, and for that
+reasons \( N \) is referred to as the 'cost' of the analysis.
+
+<h2 id="___sec5" class="anchor">Linear regression </h2>
+
+<p>
+The most popular way of trying to condense the information provided by scatter plots is to try a multiple linear regression:
+
+$$
+\begin{equation}
+\hat{Y}_j = b_0 + \sum_{i=1}^{r} b_j \, Z_{i,j}
+\tag{13}
+\end{equation}
+$$
+
+<p>
+where the coefficients \( b_0 \) and \( b_j \) are found my least-square
+minimization of the squared differences between the predicted
+hat-values \( \hat{Y}_j \) from the meta-model <a href="#mjx-eqn-13">(13)</a> and
+the actual model output \( Y_j \) produced by the Monte-Carlo simulation:
+
+$$
+\begin{equation}
+SS = \sum_{j=1}^{N} \left (Y_j - \hat{Y}_j \right)^2  =  \sum_{j=1}^{N} \left (Y_j -\left (b_0 + \sum_{i=1}^{r} b_j \, Z_{i,j} \right ) \right)^2 
+\tag{14}
+\end{equation}
+$$
+
+<p>
+As we have generated all the $Y_j$s by a linear model
+<a href="#mjx-eqn-1">(1)</a>, which has been feed with the Monte-Carlo
+samples <a href="#mjx-eqn-5">(5)</a>, we excpect that a successfull multiple
+linear regression analysis will rediscover the original linear model,
+i.e. \( \hat{b}_0 \cong 0 \) and \( \hat{b}_i \cong \Omega_i \) for \( i=1,
+\ldots, r \), where the hats denote estimates and \( \cong \) means the
+value which the estimate will converge to the the samples size \( N \) is
+large enough.
+
+<p>
+<a href="http://statsmodels.sourceforge.net/" target="_blank">Statsmodels</a> is a Python
+module that allows users to explore data, estimate statistical models,
+perform statistical tests, and multiple regression analysis. An extensive list of descriptive
+statistics, statistical tests, plotting functions, and result
+statistics are available for different types of data and each estimator.
+
+<p>
+Below we have illustrated how such a conventional multiple regression analysis may be carried out with the Statmodels module.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">#  Standard Multivariate Regression</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">statsmodels.api</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">sm</span>
+
+results <span style="color: #666666">=</span> sm<span style="color: #666666">.</span>OLS(Y, Z<span style="color: #666666">.</span>T)<span style="color: #666666">.</span>fit()
+w_ols<span style="color: #666666">=</span>results<span style="color: #666666">.</span>params  <span style="color: #408080; font-style: italic">#weights from ordinary least squares</span>
+<span style="color: #008000; font-weight: bold">print</span> results<span style="color: #666666">.</span>summary()
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;Regression coefficients&#39;</span>,w_ols
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;Rel.error for coefficients:&#39;</span>, (w_ols<span style="color: #666666">-</span>w)<span style="color: #666666">/</span>w
+<span style="color: #408080; font-style: italic"># fig=plt.figure(figsize=(12,8))</span>
+<span style="color: #408080; font-style: italic"># fig = sm.graphics.plot_partregress_grid(results, fig=fig)</span>
+<span style="color: #408080; font-style: italic"># fig = plt.figure(figsize=(12, 8))</span>
+<span style="color: #408080; font-style: italic"># fig = sm.graphics.plot_ccpr_grid(results, fig=fig)</span>
+</pre></div>
+<p>
+Observe in the 'coef' column of the summary generated by Statmodels,
+the values for the coefficients corresponding to \( b_i \) in
+<a href="#mjx-eqn-13">(13)</a> are listed, we have also computed the relative
+error of these coefficients with respect to the analytical weights
+\( \Omega_i \) in <a href="#mjx-eqn-1">(1)</a>. You may explore how how the
+relative error changes with the number of samples \( N \).
+
+<p>
+However, more widely used than the raw regression coeffients are their
+normalized equivalents, often referred to as standardized regression
+coefficients (SRCs): \( \hat{\beta_i}= \hat{b}_i
+\,\sigma_{Z_i}/\sigma_Y \). And for our simple linear model
+<a href="#mjx-eqn-1">(1)</a> we will get the following for a large enough
+\( N \):
+
+$$
+\begin{equation}
+\hat{\beta_i}= \frac{\hat{b}_i \, \sigma_{Z_i}}{\sigma_Y} \cong \frac{\Omega_i \, \sigma_{Z_i}}{\sigma_Y} 
+\tag{15}
+\end{equation}
+$$
+
+<p>
+which by comparison with our previous expression for the normalized derivatives in <a href="#mjx-eqn-9">(9)</a> we get:
+
+$$
+\begin{equation}
+\hat{\beta}_i = S_{Z_i}^{\sigma} \qquad \textsf{for the linear models only}
+\label{}
+\end{equation}
+$$
+
+and consequelty we get from <a href="#mjx-eqn-12">(12)</a>:
+$$
+\begin{equation}
+ \sum_{i=1}^{r} \beta_i^2 = 1
+\tag{16}
+\end{equation}
+$$
+
+<p>
+Here we state without proof that the standardized regression coeffients (SRCs)
+may be obtained by an ordinary least squares approach when the
+variables involved have been <a href="https://en.wikipedia.org/wiki/Standard_score" target="_blank">z-score transformed</a>. The z-score
+transformation is also commonly referred to as z-values, z-scores,
+normal scores, and standardized variables, and is obtained by
+subtraction of the mean and division of the standard deviation.
+
+<p>
+In the code example below we use the z-score transformation from
+'scipy', and by performing the standard multiple regression on the
+transformed factors we get the SRCs in the column 'coef'. The SRCs are
+stored in the 'res_standardize.params' which we assign to 'src', which
+allows for direct comparison with the previously computed with the clause:
+<p>
+
+<!-- code=text typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>print &#39;Rel. error SRC&#39;, (beta**2-s**2)/s**2 
+</pre></div>
+<p>
+You may experiment with the number of sample values \( N \) to see how it influences the relative error.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Scale the variables to obtain standardized regression coefficients (SRC)</span>
+<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">scipy.stats.mstats</span> <span style="color: #008000; font-weight: bold">import</span> zscore
+res_standardize<span style="color: #666666">=</span>sm<span style="color: #666666">.</span>OLS(zscore(Y), zscore(Z<span style="color: #666666">.</span>T))<span style="color: #666666">.</span>fit()
+<span style="color: #008000; font-weight: bold">print</span> res_standardize<span style="color: #666666">.</span>summary() 
+beta <span style="color: #666666">=</span> res_standardize<span style="color: #666666">.</span>params
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121">SRCs:&#39;</span>, beta<span style="color: #666666">**2</span>
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;Rel. error SRC&#39;</span>, (beta<span style="color: #666666">**2-</span>s<span style="color: #666666">**2</span>)<span style="color: #666666">/</span>s<span style="color: #666666">**2</span>
+</pre></div>
+
+<h1 id="___sec6" class="anchor">Normalized derivatives vs SRCs </h1>
+
+<p>
+Note that the two sensitivity measures \( S_{Z_i}^{\sigma} \) in
+<a href="#mjx-eqn-9">(9)</a> and \( \beta \) in <a href="#mjx-eqn-15">(15)</a> are only equal for
+linear models.
+
+<p>
+However, the SRCs $\beta$s, will be more robust and reliable measures
+of sensitivity for nonlinear models, as the are multidimensionally
+averaged measures, resulting from an exploration of the entire space
+of the input factors. The \( S_{Z_i}^{\sigma} \), on the other hand, are
+computed at the midpoint of the distribution \( Z_{i} \), while keeping
+all the other factors at their respective midpoints.  For small sample
+sizes \( N \) and many input factors \( r \), the $\beta$s will be rather
+imprecise. Naturally, one cannot expect to explore a high-dimensional
+input space with only a handfull of samples and statistical
+significance tests are available (F-statistic, t-values, p-values), so
+that the analyst is informed about the extent of the problem.
+
+<p>
+Finally, the 'R-squared'-statistic is normally reported:
+$$
+\begin{equation}
+ R^2 =  \sum_{i=1}^{r} \beta_i^2 
+\tag{17}
+\end{equation}
+$$
+
+<p>
+and as we have seen from <a href="#mjx-eqn-12">(12)</a> \( R^2=1 \) for linear models. For
+nonlinear \( R^2 < 1 \), and is the \( R^2 \)-value is interpreted as a measure
+of the fraction of linearity in the nonlinear model. This number
+\( R^2 \), which is also referred to as the coefficient of determination,
+is also equal to the fraction variance in the data \( \mathbf{Y} \), which
+is explained by the multiple regression model  <a href="#mjx-eqn-13">(13)</a>.
+
+<p>
+Note that as we for linear models have:
+
+$$
+\begin{equation}
+ \sum_{i=1}^{r} \hat{\beta}_i^2 = 1 =  \sum_{i=1}^{r} \left ( \frac{\hat{b}_i \, \sigma_{Z_i}}{\sigma_Y} \right)^2
+\label{}
+\end{equation}
+$$
+
+and conceqently by multiplication of \( \sigma_Y^{2} \) on both sides we get:
+
+$$
+\begin{equation}
+\sum_{i=1}^{r}  \frac{\hat{b}_i \, \sigma_{Z_i}}=\sigma_Y^{2}=V(Y)
+\tag{18}
+\end{equation}
+$$
+
+<p>
+where \( V(Y) \) indicates the variance of \( Y \). Note that both
+<a href="#mjx-eqn-18">(18)</a> and <a href="#mjx-eqn-9">(9)</a> are variance decomposition forumulas,
+i.e. formulas aportion the contribution of each factor \( Z_i \) to the
+variance of the model \( Y \).
+
+<p>
+What we seek are such variance decomopsition formulas for general,
+nonlinear models, i.e. when \( R^2 \) is low. One such 'model free'
+sensitivity measure is based on averaged partial variances, which we
+will describe below.
+
+<h1 id="___sec7" class="anchor">Polynomial chaos expansion </h1>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Polychaos computations</span>
+Npc<span style="color: #666666">=80</span>
+jpdf <span style="color: #666666">=</span> cp<span style="color: #666666">.</span>J(cp<span style="color: #666666">.</span>Normal(zm[<span style="color: #666666">0</span>,<span style="color: #666666">0</span>],zm[<span style="color: #666666">0</span>,<span style="color: #666666">1</span>]),cp<span style="color: #666666">.</span>Normal(zm[<span style="color: #666666">1</span>,<span style="color: #666666">0</span>],zm[<span style="color: #666666">1</span>,<span style="color: #666666">1</span>]),cp<span style="color: #666666">.</span>Normal(zm[<span style="color: #666666">2</span>,<span style="color: #666666">0</span>],zm[<span style="color: #666666">2</span>,<span style="color: #666666">1</span>]),cp<span style="color: #666666">.</span>Normal(zm[<span style="color: #666666">3</span>,<span style="color: #666666">0</span>],zm[<span style="color: #666666">3</span>,<span style="color: #666666">1</span>]))
+Zpc<span style="color: #666666">=</span>jpdf<span style="color: #666666">.</span>sample(Npc)
+Ypc<span style="color: #666666">=</span>linear_model(w, Zpc, Npc)
+Npol<span style="color: #666666">=4</span>
+poly <span style="color: #666666">=</span> cp<span style="color: #666666">.</span>orth_chol(Npol, jpdf)
+approx <span style="color: #666666">=</span> cp<span style="color: #666666">.</span>fit_regression(poly, Zpc, Ypc, rule<span style="color: #666666">=</span><span style="color: #BA2121">&quot;T&quot;</span>)
+
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;Expected value from cp=&#39;</span>, cp<span style="color: #666666">.</span>E(approx,jpdf), <span style="color: #BA2121">&#39;   std=&#39;</span>,cp<span style="color: #666666">.</span>Std(approx,jpdf)
+s_pc<span style="color: #666666">=</span> cp<span style="color: #666666">.</span>Sens_m(approx,jpdf)
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;Sensitivity indices from polychaos&#39;</span>, s_pc
+<span style="color: #008000; font-weight: bold">print</span> <span style="color: #BA2121">&#39;rel err&#39;</span>, (s_pc<span style="color: #666666">-</span>s<span style="color: #666666">**2</span>)<span style="color: #666666">/</span>s<span style="color: #666666">**2</span>
+</pre></div>
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Polychaos convergence</span>
+Npc_list<span style="color: #666666">=</span>np<span style="color: #666666">.</span>logspace(<span style="color: #666666">1</span>,<span style="color: #666666">3</span>,<span style="color: #666666">10</span>)<span style="color: #666666">.</span>astype(<span style="color: #008000">int</span>)
+error<span style="color: #666666">=</span>[]
+ 
+<span style="color: #008000; font-weight: bold">for</span> i,Npc <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">enumerate</span>(Npc_list):
+    Zpc<span style="color: #666666">=</span>jpdf<span style="color: #666666">.</span>sample(Npc)
+    Ypc<span style="color: #666666">=</span>linear_model(w, Zpc, Npc)
+    Npol<span style="color: #666666">=4</span>
+    poly <span style="color: #666666">=</span> cp<span style="color: #666666">.</span>orth_chol(Npol, jpdf)
+    approx <span style="color: #666666">=</span> cp<span style="color: #666666">.</span>fit_regression(poly, Zpc, Ypc, rule<span style="color: #666666">=</span><span style="color: #BA2121">&quot;T&quot;</span>)
+    s_pc<span style="color: #666666">=</span> cp<span style="color: #666666">.</span>Sens_m(approx,jpdf)
+    error<span style="color: #666666">.</span>append(LA<span style="color: #666666">.</span>norm((s_pc<span style="color: #666666">-</span>s<span style="color: #666666">**2</span>)<span style="color: #666666">/</span>s<span style="color: #666666">**2</span>))
+ 
+plt<span style="color: #666666">.</span>figure()
+plt<span style="color: #666666">.</span>semilogy(Npc_list,error);
+plt<span style="color: #666666">.</span>xlabel(<span style="color: #BA2121">&#39;Nr samples&#39;</span>);
+plt<span style="color: #666666">.</span>ylabel(<span style="color: #BA2121">&#39;L2-norm of error in Sobol indices&#39;</span>);
+</pre></div>
+
+<h1 id="___sec8" class="anchor">Conditional variances </h1>
+
+<p>
+As noted previously, the importance of a factor \( Z_i \) is manifested
+the existence of a 'shape' or 'pattern' in the model outputs
+\( Y \). Conversely, a uniform cloud of output points \( Y \) as a function of
+\( Z_i \) is a symptom, albeit not a proof, indicating that \( Z_i \) is a
+noninfluential factor. In this section we seek to demonstrate that
+conditional variances is a usefull means to quantify the 'shape' or
+'pattern' in the outputs.
+
+<p>
+The shape in the outputs \( Y \) for a given \( Z_i \), may be seen in the
+scatterplot as of \( Y \) versus \( Z_i \). In particular, we may cut the
+\( Z_i \)-axis into slices and assess how the distribution of the outputs
+\( Y \) changes from slice to slice. This is illustrated in the code
+snippet below, where the slices are identified with vertical dashed
+lines at equidistant locations on each \( Z_i \)-axis, \( i=1, \ldots,4 \).
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># # Scatter plots of data, z-slices, and linear model </span>
+plt<span style="color: #666666">.</span>figure()
+
+Ndz<span style="color: #666666">=10</span>  <span style="color: #408080; font-style: italic">#Number of slices of the Z-axes</span>
+
+Zslice <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((r,Ndz))   <span style="color: #408080; font-style: italic"># array for mean-values in the slices</span>
+ZBndry <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((r,Ndz<span style="color: #666666">+1</span>)) <span style="color: #408080; font-style: italic"># array for boundaries of the slices</span>
+dz<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros(r)
+
+<span style="color: #008000; font-weight: bold">for</span> k <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(r):
+    plt<span style="color: #666666">.</span>subplot(<span style="color: #666666">2</span>,<span style="color: #666666">2</span>,k<span style="color: #666666">+1</span>)
+    
+    zmin<span style="color: #666666">=</span>np<span style="color: #666666">.</span>min(Z[k,:]); zmax<span style="color: #666666">=</span>np<span style="color: #666666">.</span>max(Z[k,:]) <span style="color: #408080; font-style: italic"># each Z[k,:] may have different extremas</span>
+    dz[k] <span style="color: #666666">=</span> (zmax<span style="color: #666666">-</span>zmin )<span style="color: #666666">/</span>Ndz
+    
+    ZBndry[k,:] <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linspace(zmin,zmax, Ndz<span style="color: #666666">+1</span>)
+    Zslice[k,:] <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linspace(zmin<span style="color: #666666">+</span>dz[k]<span style="color: #666666">/2.</span>,zmax<span style="color: #666666">-</span>dz[k]<span style="color: #666666">/2.</span>, Ndz)
+    
+    <span style="color: #408080; font-style: italic"># Plot the slices</span>
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(Ndz):
+        plt<span style="color: #666666">.</span>axvline(ZBndry[k,i], np<span style="color: #666666">.</span>amin(Y), np<span style="color: #666666">.</span>amax(Y),linestyle<span style="color: #666666">=</span><span style="color: #BA2121">&#39;--&#39;</span>, color<span style="color: #666666">=</span><span style="color: #BA2121">&#39;.75&#39;</span>)
+        
+    <span style="color: #408080; font-style: italic"># Plot the data</span>
+    plt<span style="color: #666666">.</span>plot(Z[k,:],Y[:],<span style="color: #BA2121">&#39;.&#39;</span>)
+    xlbl<span style="color: #666666">=</span><span style="color: #BA2121">&#39;Z&#39;</span><span style="color: #666666">+</span><span style="color: #008000">str</span>(k)
+    plt<span style="color: #666666">.</span>xlabel(xlbl)
+    plt<span style="color: #666666">.</span>ylabel(<span style="color: #BA2121">&#39;Y&#39;</span>)        
+
+    Ymodel<span style="color: #666666">=</span>linear_model(w[k],Zslice[k,:],Ndz)
+    
+    plt<span style="color: #666666">.</span>plot(Zslice[k,:],Ymodel)
+    
+    ymin<span style="color: #666666">=</span>np<span style="color: #666666">.</span>amin(Y); ymax<span style="color: #666666">=</span>np<span style="color: #666666">.</span>amax(Y)
+    plt<span style="color: #666666">.</span>ylim([ymin,ymax])
+</pre></div>
+<p>
+Note, that average value of \( Y \) in a very thin slice, corresponds to keeping \( Z_i \) fixed whiel while averaging over all output values of \( Y \) due to all-but \( Z_i \), which corresponds to the conditional expected value:
+
+$$
+\begin{equation}
+E_{Z_{\sim i}} (Y\;|\;Z_i) 
+\label{}
+\end{equation}
+$$
+
+<p>
+For convenience we denote 'all-but \( Z_i \)' by \( Z_{\sim
+i} \). Naturally, a measure of how much \( E_{Z_{\sim i}} (Y\;|\;Z_i) \)
+varies in the range of \( Z_i \) is given by the conditional variance:
+
+$$
+\begin{equation}
+\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
+\label{}
+\end{equation}
+$$
+
+<p>
+Further, the variance the output \( Y \) may be decomposed into:
+$$
+\begin{equation}
+\text{V}(Y) = E_{Z_i} ( V_{Z_{\sim i}} (Y \; | Z_{i})) + \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
+\tag{19}
+\end{equation}
+$$
+
+<p>
+A large \( \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i)) \) will imply that
+\( Z_i \) is an important factor and is therefore coined the first-order
+effect of \( Z_i \) on \( Y \), and its fraction of the total variation of \( Y \) is expressed by \( S_i \), <code>the first-order sensitivity index</code> of \( Z_i \) on \( Y \):
+$$
+\begin{equation}
+S_i = \frac{\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))}{\text{V}(Y)}
+\label{}
+\end{equation}
+$$
+
+<p>
+By <a href="#mjx-eqn-19">(19)</a>, \( S_i \) is number always in the range \( [0,1] \),
+and a high value implies an important factor.
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># # Scatter plots of averaged y-values per slice, with averaged data</span>
+
+Zsorted<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros_like(Z)
+Ysorted<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros_like(Z)
+YsliceMean<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((r,Ndz))
+
+plt<span style="color: #666666">.</span>figure()
+<span style="color: #008000; font-weight: bold">for</span> k <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(r):
+    plt<span style="color: #666666">.</span>subplot(<span style="color: #666666">2</span>,<span style="color: #666666">2</span>,k<span style="color: #666666">+1</span>)
+
+    <span style="color: #408080; font-style: italic"># sort data</span>
+    sidx<span style="color: #666666">=</span>np<span style="color: #666666">.</span>argsort(Z[k,:])
+    Zsorted[k,:]<span style="color: #666666">=</span>Z[k,sidx]<span style="color: #666666">.</span>copy()   
+    Ysorted[k,:]<span style="color: #666666">=</span>Y[sidx]<span style="color: #666666">.</span>copy()   
+    
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(Ndz):
+        plt<span style="color: #666666">.</span>axvline(ZBndry[k,i], np<span style="color: #666666">.</span>amin(Y), np<span style="color: #666666">.</span>amax(Y),linestyle<span style="color: #666666">=</span><span style="color: #BA2121">&#39;--&#39;</span>, color<span style="color: #666666">=</span><span style="color: #BA2121">&#39;.75&#39;</span>)
+
+        <span style="color: #408080; font-style: italic"># find indexes of z-values in the current slice        </span>
+        zidx_range<span style="color: #666666">=</span>np<span style="color: #666666">.</span>logical_and(Zsorted[k,:]<span style="color: #666666">&gt;=</span>ZBndry[k,i],Zsorted[k,:]<span style="color: #666666">&lt;</span>ZBndry[k,i<span style="color: #666666">+1</span>])
+                    
+        <span style="color: #008000; font-weight: bold">if</span> np<span style="color: #666666">.</span>any(zidx_range):    <span style="color: #408080; font-style: italic">#check if range has elements</span>
+            YsliceMean[k,i]<span style="color: #666666">=</span>np<span style="color: #666666">.</span>mean(Ysorted[k,zidx_range])
+        <span style="color: #008000; font-weight: bold">else</span>:                     <span style="color: #408080; font-style: italic">#set value to None if noe elements in z-slice</span>
+            YsliceMean[k,i]<span style="color: #666666">=</span><span style="color: #008000">None</span>
+
+    plt<span style="color: #666666">.</span>plot(Zslice[k,:],YsliceMean[k,:],<span style="color: #BA2121">&#39;.&#39;</span>)
+
+<span style="color: #408080; font-style: italic"># # Plot linear model</span>
+    Nmodel<span style="color: #666666">=3</span>
+    zmin<span style="color: #666666">=</span>np<span style="color: #666666">.</span>min(Zslice[k,:])
+    zmax<span style="color: #666666">=</span>np<span style="color: #666666">.</span>max(Zslice[k,:])
+    
+    zvals<span style="color: #666666">=</span>np<span style="color: #666666">.</span>linspace(zmin,zmax,Nmodel)
+    Ymodel<span style="color: #666666">=</span>linear_model(w[k],zvals,Nmodel)
+    plt<span style="color: #666666">.</span>plot(zvals,Ymodel)
+    
+    xlbl<span style="color: #666666">=</span><span style="color: #BA2121">&#39;Z&#39;</span><span style="color: #666666">+</span><span style="color: #008000">str</span>(k)
+    plt<span style="color: #666666">.</span>xlabel(xlbl)
+    
+    plt<span style="color: #666666">.</span>ylim(ymin,ymax)
+</pre></div>
+
+<h1 id="___sec9" class="anchor">References </h1>
+
+<p>
+<!-- begin bibliography -->
+
+<ol>
+ <li> <div id="saltelli_global_2008"></div> <b>A. (Andrea) Saltelli</b>. 
+    <em>Global Sensitivity Analysis : the Primer</em>,
+    John Wiley,,
+    2008.</li>
+</ol>
+
+<!-- end bibliography -->
+
+<p>
+<!-- navigation buttons at the bottom of the page -->
+<ul class="pagination">
+  <li class="active"><a href="._sensitivity_introduction000.html">1</a></li>
+</ul>
+<!-- ------------------- end of main content --------------- -->
+
+</div>  <!-- end container -->
+<!-- include javascript, jQuery *first* -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap footer
+<footer>
+<a href="http://..."><img width="250" align=right src="http://..."></a>
+</footer>
+-->
+
+
+</body>
+</html>
+    
+
