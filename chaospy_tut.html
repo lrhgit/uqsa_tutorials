@@ -1,0 +1,330 @@
+<!DOCTYPE HTML>
+<!--
+Automatically generated HTML file from DocOnce source
+(https://github.com/hplgit/doconce/)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="A tutorial on chaospy">
+
+<title>A tutorial on chaospy</title>
+
+<!-- Bootstrap style: bootstrap_bluegray -->
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.rawgit.com/hplgit/doconce/master/bundled/html_styles/style_bootstrap/css/bootstrap_bluegray.css" rel="stylesheet">
+<!-- not necessary
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+-->
+
+<style type="text/css">
+
+/* Add scrollbar to dropdown menus in bootstrap navigation bar */
+.dropdown-menu {
+   height: auto;
+   max-height: 400px;
+   overflow-x: hidden;
+}
+
+/* Adds an invisible element before each target to offset for the navigation
+   bar */
+.anchor::before {
+  content:"";
+  display:block;
+  height:50px;      /* fixed header height for style bootstrap_bluegray */
+  margin:-50px 0 0; /* negative fixed header height */
+}
+</style>
+
+
+</head>
+
+<!-- tocinfo
+{'highest level': 0,
+ 'sections': [('Table of contents',
+               0,
+               'table_of_contents',
+               'table_of_contents'),
+              (u'The chaospy module', 0, None, '___sec0'),
+              (u'How to create distributions for model parameters',
+               3,
+               None,
+               '___sec1'),
+              (u'Generate solutions of samples of model parameters',
+               3,
+               None,
+               '___sec2'),
+              (u'Generate statistics based on the sampled solutions  (Monte Carlo)',
+               3,
+               None,
+               '___sec3'),
+              (u'Compare sampling schemes in the parameter space',
+               3,
+               None,
+               '___sec4'),
+              (u'Impact of sampling strategy on convergence of Monte Carlo simulations',
+               3,
+               None,
+               '___sec5'),
+              (u'Polynomial chaos expansions', 3, None, '___sec6')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "none"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+    
+<!-- Bootstrap navigation bar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="chaospy_tut.html">A tutorial on chaospy</a>
+  </div>
+
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+     <!-- navigation toc: --> <li><a href="#table_of_contents" style="font-size: 80%;"><b>Table of contents</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec0" style="font-size: 80%;"><b>The chaospy module</b></a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</div> <!-- end of navigation bar -->
+
+<div class="container">
+
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
+
+<a name="part0000"></a>
+<!-- navigation buttons at the bottom of the page -->
+<ul class="pagination">
+  <li class="active"><a href="._chaospy_tut000.html">1</a></li>
+</ul>
+<!-- ------------------- main content ---------------------- -->
+
+
+
+<div class="jumbotron">
+<center><h1>A tutorial on chaospy</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Leif Rune Hellevik -->
+
+<center>
+<b>Leif Rune Hellevik</b> 
+</center>
+
+<p>
+<!-- institution -->
+
+<center><b>Department of Structural Engineering, NTNU</b></center>
+<br>
+<p>
+<center><h4>Nov 4, 2016</h4></center> <!-- date -->
+<br>
+<p>
+</div> <!-- end jumbotron -->
+
+<h1 id="table_of_contents">Table of contents</h2>
+
+<p>
+<a href="#___sec0"> The chaospy module </a><br>
+</p>
+<p>
+
+<center><h1 id="___sec0" class="anchor">The chaospy module </h1></center> <!-- chapter heading -->
+
+<p>
+How to import the chaospy module
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">chaospy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">pc</span>
+</pre></div>
+<p>
+For convenience we use a very simple model (which may be replaced by
+your deterministic model or PDE-solver), namely an exponential decay
+function \( y(t) \) with two parameters stored in the numpy array 'x':
+
+$$
+\begin{equation}
+y(t) = x_0 \, e^{-x_1 t}
+\label{}
+\end{equation}
+$$
+
+<p>
+which may be implemented in python as:
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">model_solver</span>(t, x):
+    <span style="color: #408080; font-style: italic"># Simple emulator of a PDE solver </span>
+    <span style="color: #008000; font-weight: bold">return</span> x[<span style="color: #666666">0</span>] <span style="color: #666666">*</span> e<span style="color: #666666">**</span>(<span style="color: #666666">-</span>t<span style="color: #666666">*</span>x[<span style="color: #666666">1</span>])
+</pre></div>
+<p>
+and may be plotted by:
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>t<span style="color: #666666">=</span>linspace(<span style="color: #666666">0</span>, <span style="color: #666666">2</span>, <span style="color: #666666">200</span>)
+y <span style="color: #666666">=</span> model_solver(t, [<span style="color: #666666">3</span>,<span style="color: #666666">3</span>]) 
+plot(t,y)
+
+<span style="color: #408080; font-style: italic"># Create propability density functions (pdf) for model parameters</span>
+</pre></div>
+
+<h3 id="___sec1" class="anchor">How to create distributions for model parameters </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>pdf1 <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>Uniform(<span style="color: #666666">0</span>, <span style="color: #666666">1</span>)
+pdf2 <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>Uniform(<span style="color: #666666">0</span>, <span style="color: #666666">1</span>)
+jpdf <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>J(pdf1, pdf2)
+</pre></div>
+
+<h3 id="___sec2" class="anchor">Generate solutions of samples of model parameters </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>nr_samples<span style="color: #666666">=300</span>
+X<span style="color: #666666">=</span>jpdf<span style="color: #666666">.</span>sample(nr_samples)
+Y<span style="color: #666666">=</span>array([model_solver(t, x) <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> X<span style="color: #666666">.</span>T ]) <span style="color: #408080; font-style: italic">#solve for a given time t=0.5</span>
+
+mu<span style="color: #666666">=</span>mean(Y, <span style="color: #666666">0</span>)
+p05, p95 <span style="color: #666666">=</span> percentile(Y, [<span style="color: #666666">5</span>,<span style="color: #666666">95</span>], <span style="color: #666666">0</span>)
+fill_between(t, p05, p95, alpha<span style="color: #666666">=0.5</span>)
+plot(t, mu)
+</pre></div>
+
+<h3 id="___sec3" class="anchor">Generate statistics based on the sampled solutions  (Monte Carlo) </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>nr_samples<span style="color: #666666">=400</span>
+X<span style="color: #666666">=</span>jpdf<span style="color: #666666">.</span>sample(nr_samples)
+Y<span style="color: #666666">=</span>array([model_solver(<span style="color: #666666">0.5</span>, x) <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> X<span style="color: #666666">.</span>T ]) <span style="color: #408080; font-style: italic">#solve for a given time t=0.5</span>
+nr_samples_list<span style="color: #666666">=</span>arange(nr_samples)<span style="color: #666666">+1</span>
+converge <span style="color: #666666">=</span> cumsum(Y, <span style="color: #666666">0</span>)<span style="color: #666666">/</span>nr_samples_list
+plot(nr_samples_list, converge)
+legstr<span style="color: #666666">=</span>[]
+legstr<span style="color: #666666">.</span>append(<span style="color: #BA2121">&#39;random&#39;</span>)
+</pre></div>
+
+<h3 id="___sec4" class="anchor">Compare sampling schemes in the parameter space </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Various sampling schemes</span>
+jpdf <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>J(pc<span style="color: #666666">.</span>Uniform(<span style="color: #666666">0</span>,<span style="color: #666666">1</span>), pc<span style="color: #666666">.</span>Uniform(<span style="color: #666666">0</span>,<span style="color: #666666">1</span>))
+ax1<span style="color: #666666">=</span>subplot(<span style="color: #666666">121</span>)
+ax1<span style="color: #666666">.</span>set_title(<span style="color: #BA2121">&#39;Random&#39;</span>)
+X1 <span style="color: #666666">=</span> jpdf<span style="color: #666666">.</span>sample(nr_samples)
+scatter(<span style="color: #666666">*</span>X1)
+ax2<span style="color: #666666">=</span>subplot(<span style="color: #666666">122</span>)
+X2 <span style="color: #666666">=</span> jpdf<span style="color: #666666">.</span>sample(nr_samples, <span style="color: #BA2121">&quot;S&quot;</span>)
+ax2<span style="color: #666666">.</span>set_title(<span style="color: #BA2121">&#39;Structured&#39;</span>)
+scatter(<span style="color: #666666">*</span>X2)
+</pre></div>
+
+<h3 id="___sec5" class="anchor">Impact of sampling strategy on convergence of Monte Carlo simulations </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Effect of sampling on convergence of Monte Carlo simulations</span>
+X <span style="color: #666666">=</span> jpdf<span style="color: #666666">.</span>sample(nr_samples, <span style="color: #BA2121">&quot;S&quot;</span>)
+Y <span style="color: #666666">=</span> [model_solver(<span style="color: #666666">0.5</span>, x) <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> X<span style="color: #666666">.</span>T]
+converge_structured <span style="color: #666666">=</span> cumsum(Y, <span style="color: #666666">0</span>)<span style="color: #666666">/</span>nr_samples_list
+
+<span style="color: #408080; font-style: italic"># Compare convergence for random and structured sampling</span>
+plot(nr_samples_list, converge)
+plot(nr_samples_list, converge_structured, <span style="color: #BA2121">&quot;c&quot;</span>)
+legend([<span style="color: #BA2121">&#39;random&#39;</span>,<span style="color: #BA2121">&#39;structured&#39;</span>])
+</pre></div>
+
+<h3 id="___sec6" class="anchor">Polynomial chaos expansions </h3>
+
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Polychaos expansions</span>
+poly <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>orth_chol(<span style="color: #666666">1</span>, jpdf)
+X <span style="color: #666666">=</span> jpdf<span style="color: #666666">.</span>sample(<span style="color: #666666">10</span>, <span style="color: #BA2121">&quot;S&quot;</span>)
+Y <span style="color: #666666">=</span> [model_solver(<span style="color: #666666">0.5</span>, x) <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> X<span style="color: #666666">.</span>T]
+
+approx <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>fit_regression(poly, X, Y, rule<span style="color: #666666">=</span><span style="color: #BA2121">&quot;T&quot;</span>)
+
+nr_poly_samples<span style="color: #666666">=</span>np<span style="color: #666666">.</span>arange(<span style="color: #666666">20</span>,<span style="color: #666666">500</span>,<span style="color: #666666">50</span>)
+
+order <span style="color: #666666">=</span> <span style="color: #666666">3</span>
+poly <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>orth_chol(order<span style="color: #666666">+1</span>, jpdf)
+
+mu_values<span style="color: #666666">=</span>[]
+
+<span style="color: #008000; font-weight: bold">for</span> psample <span style="color: #AA22FF; font-weight: bold">in</span> nr_poly_samples:
+    X <span style="color: #666666">=</span> jpdf<span style="color: #666666">.</span>sample(psample, <span style="color: #BA2121">&quot;S&quot;</span>)
+    Y <span style="color: #666666">=</span> [model_solver(<span style="color: #666666">0.5</span>, x) <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> X<span style="color: #666666">.</span>T]
+    approx <span style="color: #666666">=</span> pc<span style="color: #666666">.</span>fit_regression(poly, X, Y, rule<span style="color: #666666">=</span><span style="color: #BA2121">&quot;T&quot;</span>)
+    mu_values<span style="color: #666666">.</span>append(pc<span style="color: #666666">.</span>E(approx,jpdf))
+
+plot(nr_poly_samples,mu_values)
+</pre></div>
+<p>
+<!-- begin bibliography -->
+
+<p>
+<!-- end bibliography -->
+
+<p>
+<!-- navigation buttons at the bottom of the page -->
+<ul class="pagination">
+  <li class="active"><a href="._chaospy_tut000.html">1</a></li>
+</ul>
+<!-- ------------------- end of main content --------------- -->
+
+</div>  <!-- end container -->
+<!-- include javascript, jQuery *first* -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap footer
+<footer>
+<a href="http://..."><img width="250" align=right src="http://..."></a>
+</footer>
+-->
+
+
+</body>
+</html>
+    
+
