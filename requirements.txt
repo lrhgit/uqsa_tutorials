@@ -1,2 +1,8 @@
 chaospy
+setuptools
+numpy
+matplotlib==2
+pandas
+IPython
+statsmodels
 
