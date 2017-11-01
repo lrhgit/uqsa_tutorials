@@ -8,6 +8,7 @@ path=~/git/KT8302_notes/tutorials
 for nbook in $( ls -d *.ipynb ); do
     cp $path/$nbook .
     cp $path/figs/* ./figs/
+    ipython nbconvert $nbook
 done
 
 

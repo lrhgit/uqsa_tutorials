@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>sensitivity_introduction</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>introduction_gpc</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11778,11 +11778,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- dom:TITLE: A practical introduction to sensitivity analysis --></p>
-<h1 id="A-practical-introduction-to-sensitivity-analysis">A practical introduction to sensitivity analysis<a class="anchor-link" href="#A-practical-introduction-to-sensitivity-analysis">&#182;</a></h1><p><!-- dom:AUTHOR: Leif Rune Hellevik at Department of Structural Engineering, NTNU -->
-<!-- Author: --> <strong>Leif Rune Hellevik</strong>, Department of Structural Engineering, NTNU</p>
-<p>Date: <strong>Oct 26, 2017</strong></p>
-
+<p><!-- dom:TITLE: A practical introduction to polynomial chaos with the chaospy package --></p>
+<h1 id="A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">A practical introduction to polynomial chaos with the chaospy package<a class="anchor-link" href="#A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -11791,7 +11788,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ipython magic</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># ipython magic</span>
 <span class="o">%</span><span class="k">matplotlib</span> notebook
 <span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
@@ -11807,15 +11804,16 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="c1"># plot configuration</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
 <span class="c1"># import seaborn as sns # sets another style</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
+
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">)</span>
 
 <span class="c1"># font = {&#39;family&#39; : &#39;sans-serif&#39;,</span>
@@ -11834,15 +11832,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import modules</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
-<span class="kn">import</span> <span class="nn">chaospy</span> <span class="k">as</span> <span class="nn">cp</span>
-<span class="kn">from</span> <span class="nn">sensitivity_examples_nonlinear</span> <span class="k">import</span> <span class="n">generate_distributions</span>
-<span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">generate_sample_matrices_mc</span>
-<span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">calculate_sensitivity_indices_mc</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">_operator</span> <span class="k">import</span> <span class="n">index</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">chaospy</span> <span class="kn">as</span> <span class="nn">cp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
 </pre></div>
 
 </div>
@@ -11854,7 +11846,21 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="A-simple-linear-model">A simple linear model<a class="anchor-link" href="#A-simple-linear-model">&#182;</a></h1><p>As an simple linear model example consider:</p>
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><div id="sec:introduction"></div><p>To conduct UQSA with the polynomial chaos (PC) method we use the
+python package <code>chaospy</code>.  This package includes many features and
+methods to apply non-intrusive polynomial chaos to any model with few
+lines of code.  Since, <code>chaospy</code> allows for convenient definition of
+random variables, calculation of joint distributions and generation of
+samples, we apply <code>chaospy</code> as well for the Monte Carlo method.</p>
+<p>In the following we will briefly describe the theory of polynomial
+chaos and give a practical step by step guide for the application of
+<code>chaospy</code>.</p>
+<h1 id="Polynomial-chaos">Polynomial chaos<a class="anchor-link" href="#Polynomial-chaos">&#182;</a></h1><div id="sec:polynomialChaos"></div><p>For a more in depth introduction to the polynomial chaos method see (<a href="#xiu_numerical_2010;@ smith_uncertainty_2013">[xiu_numerical_2010;@ smith_uncertainty_2013]</a>).</p>
+<h2 id="Concept">Concept<a class="anchor-link" href="#Concept">&#182;</a></h2><p>The main concept of polynomial chaos is to approximate the stochastic
+model response of a model with stochastic input as polynomial
+expansion relating the response to the inputs.  For simplicity, we
+consider a model function $f$ which takes random variables $\mathbf{Z}$ and
+non-random variables as spatial coordinates $x$ or time $t$, as input:</p>
 
 </div>
 </div>
@@ -11864,10 +11870,10 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:linear_model"></div><p>$$
+<div id="_auto1"></div><p>$$
 \begin{equation}
-Y = \sum_{i=1}^{r} \Omega_i \, Z_i
-\label{eq:linear_model} \tag{1}
+Y = y{}(x, t, \mathbf{Z})
+\label{_auto1} \tag{1}
 \end{equation}
 $$</p>
 
@@ -11878,10 +11884,42 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>where the input factors are $\mathbf{X} = (\Omega_1, \Omega_2, \ldots,
-\Omega_r, Z_1, Z_2, \ldots, Z_r)$. For simplicity we assume that the
-model output $Y$ of <a href="#eq:linear_model">(1)</a> is a single variable and
-that the $\Omega s$ are fixed coefficients or weights.</p>
+<p>Then we seek to generate a polynomial expansion such that we can approximate the model response.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto2"></div><p>$$
+\begin{equation}
+Y = y{}(x, t, \mathbf{Z}) \approx y_{N} = \sum_{i=1}^{P} v_i(x, t) \Phi_i(\mathbf{Z}),
+\label{_auto2} \tag{2}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where $v_i$ are the expansion coefficients, which are only dependent on the non-stochastic parameters, and $\Phi_i$ are orthogonal polynomials, which depend
+solely on the random input parameter $\mathbf{Z}$.
+Once the polynomial expansion is calculated, we can analytically calculate the statistics of approximated model output.</p>
+<p>Since polynomial chaos generally requires fewer model evaluations to estimates statistics than Monte Carlo methods, this method is preferable applied for models which need long computational time.</p>
+<h3 id="Applicability">Applicability<a class="anchor-link" href="#Applicability">&#182;</a></h3><p>Polynomial chaos may be applied in a wide variety of situations. Requirements for convergence are simply that the function be square integrable with respect to the inner product associated with the orthogonal polynomials. In otherwords if the function has a finite variance, polynomial chaos may be applied without worrying too much. The caveat to this fact is that convergence may not necessarily be fast! The smoother the function the faster the convergence. Polynomial choas can handle discontinuities, however, it may be advisable to reformulate the problem in these situations (see Feinberg, Eck and Langtangen 2016...).</p>
+<h2 id="Orthogonal-polynomials">Orthogonal polynomials<a class="anchor-link" href="#Orthogonal-polynomials">&#182;</a></h2><p>As state above the polynomial chaos expansion consists of a sum of basis polynomials in the input parameters $\mathbf{Z}$. 
+By using orthogonal polynomials as the basis polynomials the efficiency of the convergence may be improved, and the use of the expansion in uncertainty quantification and sensitivity analysis is simplified.
+Orthogonality of functions is a general concept developed for functional analysis within an inner product space. Typically the inner product of two functions is defined as a weighted integral of the product of the functions over a domain of interest.</p>
+<p><hr/>
+In particular for the purposes of polynomial chaos the inner product of two polynomials is defined as the expected value of their product, i.e. the integral of their product weighted with respect to the distribution of random input parameters.
+Two polynomials are orthogonal if their inner product is 0, and a set of orthogonal polynomials is orthogonal if every pair of distinct polynomials are orthogonal.</p>
+<p>The following equalities hold for the orthogonal basis polynomials used in  polynomial chaos</p>
 
 </div>
 </div>
@@ -11891,9 +11929,12 @@ that the $\Omega s$ are fixed coefficients or weights.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
-\begin{equation}
- \Omega_1=\Omega_2=\ldots=\text{constant}
-\end{equation}
+\begin{align*}
+ \mathbb{E}(\Phi_i(\mathbf{Z})\Phi_j(\mathbf{Z})) &amp;= \langle \Phi_i(\mathbf{Z}),\Phi_j(\mathbf{Z}) \rangle\\
+ &amp;= \int_{\Omega} \Phi_i(z)\Phi_j(z)w(z) dz \\
+ &amp;= \int_{\Omega} \Phi_i(z)\Phi_j(z)f(z) dz  \\
+ &amp;= {\int_{\Omega} \Phi_i(z)\Phi_j(z) dF_Z(\mathbf{z})} = h_j \delta_{ij},
+\end{align*}
 $$</p>
 
 </div>
@@ -11903,9 +11944,21 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Consequently, the true factors of <a href="#eq:linear_model">(1)</a> are just
-$(Z_1, Z_2, \ldots, Z_r)$. The individual variables
-$Z_i$ are taken to normally distributed with mean zero</p>
+<p>where $h_j$ is equal to the normalisation factor of the used polynomials, and $\Phi_i(\mathbf{Z})$ indicates the substitution of the random variable $\mathbf{Z}$ as the polynomial's variable.
+Note that $\Phi_0$ is a polynomial of degree zero, i.e. a constant thus $\mathbb{E}(\Phi_0\Phi_j) = \Phi_0 \mathbb{E}(\Phi_j) = 0$ which implies that $\mathbb{E}(\Phi_j) = 0$ for $j \neq 0$.</p>
+<hr/>
+
+
+
+<p>Once the random inputs $\mathbf{Z}$ are properly defined with marginal distributions, orthogonal polynomials can be constructed.
+For most univariate distributions, polynomial bases functions are defined, and listed in the Asker Wilkeys scheme.
+A set of orthogonal polynomials can be created from those basis polynomials with orthogonalization methods as Cholesky decomposition, three terms recursion, and modified Gram-Schmidt.</p>
+<h2 id="Expansion-coefficients">Expansion coefficients<a class="anchor-link" href="#Expansion-coefficients">&#182;</a></h2><p>There are two non-intrusive ways of approximating a polynomial chaos expansion coefficients:</p>
+<h3 id="Regression">Regression<a class="anchor-link" href="#Regression">&#182;</a></h3><p>Supposing a polynomial expansion approximation $y_{N} = \sum_i v_i \Phi_i$,
+then <em>stochastic collocation</em> specifies a set of nodes, $\Theta_{M} = \left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$, where the deterministic values of $y_{N}=y$.
+The task is thus to find suitable coefficients $v_i$ such that this condition is satisfied.
+Considering the existence of a set of collocation nodes $\left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$, then $y_{N} = \sum_i v_i \Phi_i$ can be
+ formed into linear system of equations for the coefficients $v_i$ at these nodes:</p>
 
 </div>
 </div>
@@ -11915,9 +11968,25 @@ $Z_i$ are taken to normally distributed with mean zero</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:NZi"></div><p>$$
-\begin{equation} Z_i \sim N(0, \sigma_{Z_i}), \qquad i=1,2, \ldots, r
-\label{eq:NZi} \tag{2} \end{equation}
+<div id="eq:stochColl"></div><p>$$
+\begin{equation}
+\begin{bmatrix}
+\Phi_0(\mathbf{z}^{(1)}) &amp; \cdots &amp; \Phi_P(\mathbf{z}^{(1)}) \\
+\vdots &amp; &amp; \vdots \\
+\Phi_0(\mathbf{z}^{(N)}) &amp; \cdot &amp; \Phi_P(\mathbf{z}^{(n)})
+\end{bmatrix}
+\begin{bmatrix}
+v_{0}\\
+\vdots \\
+v_{P}
+\end{bmatrix}
+= \begin{bmatrix}
+y(\mathbf{z}^{(1)}) \\
+\vdots \\
+y (\mathbf{z}^{(N)})
+\end{bmatrix}
+\end{equation}
+\label{eq:stochColl} \tag{3}
 $$</p>
 
 </div>
@@ -11927,10 +11996,11 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As the predicted value $Y$ of the model in <a href="#eq:linear_model">(1)</a> is
-linear combination of normally distributed factors, it is easy to
-verify (see exercices in <a href="#saltelli_global_2008">[saltelli_global_2008]</a>) that $Y$ also will
-be normally distributed with:</p>
+<p>Now we can use regression to achieve the relaxed condition that $y_{N}$ is "sufficiently close" to $y$ at $\left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$.
+This is done by choosing a larger number of samples so that (<a href="#eq:stochColl">eq:stochColl</a>) is over determined and
+then minimizing the appropriate error ${\lvert\lvert {y_{N} \rvert\rvert}-y}_{R}$ over $\left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$.
+Ordinary least squares, Ridge-Regression, and Tikhonov-Regularization are all regression methods that may be applied to this problem.</p>
+<h3 id="Pseudo-spectral-projection">Pseudo-spectral projection<a class="anchor-link" href="#Pseudo-spectral-projection">&#182;</a></h3><p>Discrete projection refers to the approximation of coefficients for $y_{N} = \sum_{i=1}^{P} v_i \Phi_i$, by directly approximating the orthogonal projection coefficients</p>
 
 </div>
 </div>
@@ -11940,10 +12010,10 @@ be normally distributed with:</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:analytic_mean_std"></div><p>$$
+<div id="_auto3"></div><p>$$
 \begin{equation}
-\bar{y} = \sum_{i=1}^{r} \Omega_i \; \bar{z}_i, \qquad \sigma_Y = \sqrt{\sum_{i=1}^{r} \Omega_i^2 \, \sigma_{Z_i}^2}
-\label{eq:analytic_mean_std} \tag{3}    
+v_i = \frac{1}{h_i} \mathbb{E}(y \Phi_i) = \frac{1}{h_i} \int_{\Omega} y \Phi_i dF_z,
+\label{_auto3} \tag{4}
 \end{equation}
 $$</p>
 
@@ -11954,8 +12024,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Furthermore, we order the factors from the most certain to the less
-certain, i.e.:</p>
+<p>using a quadrature scheme to calculate the integral $\int_{\Omega} y \Phi_i dF_z$ as a sum $\sum_{i=1}^{P} w_i y(\mathbf{z}^{(i)})$, where $w_i$ are the quadrature weights.</p>
+<p>This results in an approximation $\tilde{v}_{i}$ of $v_{i}$ the error between the final approximation may be split</p>
 
 </div>
 </div>
@@ -11964,9 +12034,11 @@ certain, i.e.:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:ps_error"></div><p>$$
 \begin{equation}
- \sigma_{Z_1} &lt;  \sigma_{Z_2} &lt;  \ldots  &lt;  \sigma_{Z_r}
+{\lvert\lvert {y_{N} - y} \rvert\rvert} \leq {\lvert\lvert {\sum_{i=1} \rvert\rvert}^{P} v_i \Phi_i - y{} } + {\lvert\lvert {\sum_{i=1} \rvert\rvert}^{P} \left( v_i - \tilde{v}_i \right)\Phi_i}
+\label{eq:ps_error} \tag{5}
 \end{equation}
 $$</p>
 
@@ -11977,7 +12049,140 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Scatterplots-versus-derivatives">Scatterplots versus derivatives<a class="anchor-link" href="#Scatterplots-versus-derivatives">&#182;</a></h1><p>We have implemented the simple linear model in <a href="#eq:linear_model">(1)</a> in python as:</p>
+<p>where the first term is called the truncation error and the second term the quadrature error.
+Thus one may consider the maximal accuracy for a given polynomial order $P$ and see this should be achieved as the quadrature error is reduced to almost 0 by increased number of collocation nodes.</p>
+<h2 id="Statistics">Statistics<a class="anchor-link" href="#Statistics">&#182;</a></h2><p>Once the expansion was generated, it can be used directly to calculated statistics for the uncertainty and sensitivity analysis.
+The two most common measures for uncertainty quantification, <strong>expected value</strong> and <strong>variance</strong>, can be calculated by
+inserting the expansion into the definition of the measures.</p>
+<p>The expected value is equal to the first expansion coefficient:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:expectedValue_gPCE"></div><p>$$
+\begin{equation}
+  \begin{aligned}
+    {\mathbb{E}}(Y) \approx {\int_{\Omega} \sum_{i=1}^{P} v_i \Phi_i(\mathbf{z dF_Z(\mathbf{z})})} = v_1.
+  \end{aligned}
+    \label{eq:expectedValue_gPCE} \tag{6}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The variance is the sum of squared expansion coefficients multiplied by normalisation constants of the polynomials:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:variance_gPCE"></div><p>$$
+\begin{equation}
+    \begin{aligned}
+    \operatorname{Var}(Y) &amp;\approx {\mathbb{E}}{({v(x,t,\mathbf{Z})}(\mathbf{Z})-{\mathbb{E}}(Y))^2} = \int_{\Omega}({v(x,t,\mathbf{Z})}(\mathbf{z}) - v_1)^2 dF_Z(\mathbf{z}) \\
+    &amp;=  \int_{\Omega}\left(\sum_{i=1}^{P} v_i \Phi_i(\mathbf{z}) \right)^2 dF_Z(\mathbf{z}) - v_1^2 = \sum_{i=1}^{P} v_i^2 \int_{\Omega}{\Phi^2_i(\mathbf{z})}dF_Z(\mathbf{z}) - v_1^2 \\
+    &amp;= \sum_{i=1}^{P} v_i^2 h_i - v_1^2 = \sum_{i=2}^{P} v_i^2 h_i
+  \end{aligned}
+  \label{eq:variance_gPCE} \tag{7}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>(Note the orthogonality of individual terms implies their covariance is zero, thus the variance is simply the sum of the variances of the terms.)</p>
+<p>The Sobol indices may be calculated quite simply from the expansion terms due to the fact that the ANOVA decomposition is unique. Thus the main effect of a parameter $z_i$ is simply the variance of all terms only in $z_i$. Explicitly let $\mathcal{A}_{i} = \{k | \Phi_{k}(\mathbf{z}) = \Phi_{k}(z_i)\} $ ,i.e. $\mathcal{A}_{i}$ is the set of all indices of basis functions depending only on $z_i$ then</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:sensitivity_gPCE"></div><p>$$
+\begin{equation}
+    \begin{aligned}
+    f_i &amp;= \sum_{k\in \mathcal{A}_{i}} v_{k} \Phi_{k} \implies \\
+    S_i &amp;= \frac{1}{\operatorname{Var}(Y)} \sum_{k\in \mathcal{A}_{i}} \operatorname{Var}(v_{k} \Phi_{k}) \\
+    S_i &amp;= \frac{1}{\operatorname{Var}(Y)} \sum_{k\in \mathcal{A}_{i}} v_{k}^2 h_{k} 
+  \end{aligned}
+  \label{eq:sensitivity_gPCE} \tag{8}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and similarly one may define $\mathcal{A}_{ij}$ for pairwise combinations of inputs and further to calculate all orders of sensitivities.</p>
+<h1 id="Chaospy">Chaospy<a class="anchor-link" href="#Chaospy">&#182;</a></h1><div id="sec:chaospy"></div><p>The python package <code>chaospy</code> an introductory paper to the package including a comparison to other software packages is
+presented here (<a href="#feinberg_2015">[feinberg_2015]</a>).
+You can find an introduction, tutorials and the source code at the projects homepage: <a href="https://github.com/jonathf/chaospy.">https://github.com/jonathf/chaospy.</a></p>
+<p>The installation of the package can be done via <code>pip</code>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>    pip install chaospy</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following we will use the import naming convention of the package creator to import the package in python:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>    import chaospy as cp</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Therefore it will be convenient to see whenever a method of the package is applied.</p>
+<p>The package <code>chaospy</code> is doc-string annotated which means that every method provides a short help text with small examples.
+To show the method documentation simply type a <code>?</code> after the method name in a ipython console or notebook.
+As shown in the following two examples:</p>
 
 </div>
 </div>
@@ -11987,47 +12192,22 @@ $$</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start the linear model</span>
-<span class="k">def</span> <span class="nf">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># show help for uniform distributions</span>
+cp.Uniform<span class="o">?</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>To hold the mean and the standard deviation of all the input factors
-we use a numpy-array of size $r\times 2$, with one row per factor,
-where the first column holds the mean whereas the second column holds
-the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-vector.</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Set mean (column 0) and standard deviations (column 1) for each factor z. Nrv=nr. rows</span>
-    <span class="n">Nrv</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># number of random variables </span>
-    <span class="n">zm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nrv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
-
-    <span class="c1"># The above &quot;list comprehension&quot; is equivalent to the next for lines</span>
-    <span class="c1"># zm = np.zeros((Nrv, 2))</span>
-    <span class="c1"># zm[0, 1] = 1</span>
-    <span class="c1"># zm[1, 1] = 2</span>
-    <span class="c1"># zm[2, 1] = 3</span>
-    <span class="c1"># zm[3, 1] = 4</span>
-
-    <span class="c1"># Set the weight</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">Nrv</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># show help for sample generation</span>
+cp.samplegen<span class="o">?</span>
 </pre></div>
 
 </div>
@@ -12039,64 +12219,45 @@ the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-v
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We may now perform a Monte Carlo experiment on our model by generating $N$ samples from the distributions of each factor and an input sample is thus produced:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:mc_sample"></div><p>$$
-\begin{equation}
-\mathbf{Z} = \left [
-\begin{array}{cccc}
-Z_{1,1} &amp; Z_{1,2}  &amp; \ldots &amp; Z_{1,N} \\ 
-Z_{2,1} &amp; Z_{2,2}  &amp; \ldots &amp; Z_{2,N}\\ 
-\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\ 
-Z_{r,1} &amp; Z_{r,2}  &amp; \ldots &amp; Z_{r,N}
-\end{array} 
-\right ]
-\label{eq:mc_sample} \tag{4}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We may the compute a value of $Y$ from <a href="#eq:linear_model">(1)</a> for each
-column in <a href="#eq:mc_sample">(4)</a> to produce a solution vector
-$\mathbf{Y}$. Having sampled $N$ values from each input factor we may
-produce $r$ scatter plots, by projecting in turn the $N$ values of
-$\mathbf{Y}$ against the $N$ values of each of the $r$ input factors.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:mc_solution"></div><p>$$
-\begin{equation}
-\mathbf{Y} = \left [
-\begin{array}{c}
-y_1 \\ 
-y_2 \\ 
-\vdots \\ 
-y_N
-\end{array}
-\right ]
-\label{eq:mc_solution} \tag{5}
-\end{equation}
-$$</p>
+<h2 id="Steps-for-polynomial-chaos-analysis-with-chaospy">Steps for polynomial chaos analysis with chaospy<a class="anchor-link" href="#Steps-for-polynomial-chaos-analysis-with-chaospy">&#182;</a></h2><div id="sec:uqsaChaospy"></div><p>To conduct UQSA analysis with polynomial chaos we need to follow the following steps:</p>
+<ul>
+<li><p>Definition of the marginal and joint distributions</p>
+</li>
+<li><p>Generation of the orthogonal polynomials</p>
+</li>
+<li><p>Linear regression</p>
+<ul>
+<li><p>Generation of samples</p>
+</li>
+<li><p><code>Evaluation of the model for all samples</code></p>
+</li>
+<li><p>Generation of the polynomial chaos expansion</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Pseudo-spectral projection</p>
+<ul>
+<li><p>Generation of integration nodes and weights</p>
+</li>
+<li><p><code>Evaluation of the model for all nodes</code></p>
+</li>
+<li><p>Generation of the polynomial chaos expansion</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Calculations of all statistics</li>
+</ul>
+<p>Note, that steps  <strong>3 Linear regression</strong>  and <strong>4 Pseudo-spectral projection</strong> are interchangeable. They are simply different methods of cacluating the expansion coefficients. In both cases
+generate a set of points in the parameter space where the model must be evaluated (steps 3.b and 4.b, respectively).</p>
+<h2 id="Step-1:-Definition-of-marginal-and-joint-distributions">Step 1: Definition of marginal and joint distributions<a class="anchor-link" href="#Step-1:-Definition-of-marginal-and-joint-distributions">&#182;</a></h2><div id="sec:distributions"></div><p>The analysis of a each model starts with the definition of the marginal distributions for each random model input, i.e. describing it as
+random variable.
+Univariate random variables can be defined with <code>chaospy</code> by calling the class-constructor of a distribution type, e.g <code>cp.Normal()</code>, with arguments to describe the particular distribution, e.g. mean value and standard deviation for <code>cp.Normal</code>.
+The help function can be used to find out more about the required arguments, e.g. <code>help(cp.Normal)</code>.</p>
+<p>In the following an example for 3 random variables with uniform, normal and log-normal distribution:</p>
 
 </div>
 </div>
@@ -12106,32 +12267,11 @@ $$</p>
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Generate distributions for each element in z and sample</span>
-    <span class="n">Ns</span> <span class="o">=</span> <span class="mi">500</span>
-    <span class="c1"># jpdf = generate_distributions(zm)</span>
-    
-    <span class="n">pdfs</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zm</span><span class="p">):</span>
-        <span class="n">pdfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-
-    <span class="n">jpdf</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="o">*</span><span class="n">pdfs</span><span class="p">)</span>
-
-    <span class="c1"># generate Z</span>
-    <span class="n">Z</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
-    <span class="c1"># evaluate the model</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">Z</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
-
-    <span class="c1"># Scatter plots of data for visual inspection of sensitivity</span>
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Y</span><span class="p">[:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-        
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># simple distributions</span>
+<span class="n">rv1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rv2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rv3</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rv1</span><span class="p">,</span> <span class="n">rv2</span><span class="p">,</span> <span class="n">rv3</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12143,203 +12283,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that the assumption of independent factors $Z_i$ allows us to sample
-each $Z_i$ independently from its own marginal distribution. We store
-all the samples for all the factors $Z_i$ in the the numpy array
-<code>Z[i,:]</code>, where $i$ corresponds to $Z_i$ as:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>    pdf.append(cp.Normal(z[0],z[1]))
-        Z[i,:]=pdf[i].sample(N)</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>From the scatterplots generated by the python code above we
-intuitively get the impression that $Y$ is more sensitive to $Z_4$
-than to $Z_3$, and that $Y$ is more sensitive to $Z_3$ than to $Z_3$,
-and that we may order the factors my influence on $Y$ as:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:scatter_plot_rank"></div><p>$$
-\begin{equation}
-Z_4 &gt; Z_3 &gt; Z_2 &gt; Z_1 
-\label{eq:scatter_plot_rank} \tag{6}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Our intuitive notion of influence is based on that there is more shape
-(or better pattern) in the plot for $Z_4$ than for $Z_3$ and likewise.</p>
-<p>For our simple linear model in <a href="#eq:linear_model">(1)</a> we are in the
-fortunate situation that we may compute the local derivatives analyticaly:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Sp"></div><p>$$
-\begin{equation}
-S_{Z_i}^{p} = \frac{\partial Y}{\partial Z_i} = \Omega_i
-\label{eq:Sp} \tag{7}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In our code example we set all the $\Omega_i=2$ for $i=1,\ldots,4$,
-and according to the local sensitivity meansure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> all the input factors $Z_i$s are equally important and
-independent of the variation of each factor. This measure is clearly
-at odds with the ranking of influence based on the scatterplots in
-<a href="#eq:scatter_plot_rank">(6)</a> and is an indication of the usefullness of
-scatterplots in sensititivy analysis. However, the bidimensional
-scatterplots may in some cases be deceiving and lead to type II
-errors (i.e. failure to identify influential parameters). ref to Saltelli 2004...</p>
-<p>Most sensitivity measures aim to preserve the rich information
-provided by the scatterplots in a condensed format. The challenge is
-how to rank the factors rapidly and automatically without having to
-inspect many scatterplots in situations with many input
-factors. Another challenge with scatterplots is that sensitivities for
-sets cannot be visualized, while luckily compact sensitivity measures may be
-defined in such cases.</p>
-<h1 id="Normalized-derivatives">Normalized derivatives<a class="anchor-link" href="#Normalized-derivatives">&#182;</a></h1><p>A simple way to improve the derivative sensitivity measure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> is to scale the input-output variables with their standard deviations:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss"></div><p>$$
-\begin{equation}
-S_{Z_i}^{\sigma} = \frac{\partial Y/\sigma_Y}{\partial Z_i/\sigma_{Z_i}} = \frac{\sigma_{Z_i}}{\sigma_{Y}} \; \frac{\partial Y}{\partial Z_i}
-\label{eq:Ss} \tag{8}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In case of our simple linear model <a href="#eq:linear_model">(1)</a> we get from
-<a href="#eq:Ss">(8)</a>:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss_simple"></div><p>$$
-\begin{equation}
-\left (S_{Z_i}^{\sigma} \right)^2 = \left( \frac{\sigma_{Z_i}}{\sigma_{Y}}\right)^2 \; \left (\frac{\partial Y}{\partial Z_i}\right)^2 = \left( \frac{\sigma_{Z_i}\, \Omega_i}{\sigma_{Y}}\right)^2 \;  \qquad \textsf{which may be rearranged to:} \qquad \sigma_y^2 \, (S_{Z_i}^{\sigma})^2 = \left ( \Omega_{i} \sigma_{Y} \right )^2
-\label{eq:Ss_simple} \tag{9}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Based on the linearity of our model we previously found  <a href="#eq:analytic_mean_std">(3)</a> which also yields:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss_model_ded"></div><p>$$
-\begin{equation}
- \sigma_Y^2 = \sum_{i=1}^{r} \left(\Omega_i^2 \, \sigma_{Z_i}\right)^2
- \label{eq:Ss_model_ded} \tag{10}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As both <a href="#eq:Ss_model_ded">(10)</a> and <a href="#eq:Ss_simple">(9)</a> must hold simultaneously we get</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss1"></div><p>$$
-\begin{equation}
-\left (S_{Z_i}^{\sigma} \right)^2=1 
-\label{eq:Ss1} \tag{11}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The normalized derivative measure of sensitivity in <a href="#eq:Ss">(8)</a> is
-more convincing than <a href="#eq:Sp">(7)</a>: first, as it involves both the
-weights $\Omega_i$ and the factors $Z_i$ in <a href="#eq:linear_model">(1)</a>;
-second as the measures are properly scaled and summarizes to one,
-which allows for an easy interpretation of the output sensitivity with
-respect to each of the input factors.</p>
+<p>After all random input variables are defined with univariate random variables a multi-variate random variable and its joint distribution
+can be constructed with the following command:</p>
 
 </div>
 </div>
@@ -12349,13 +12294,9 @@ respect to each of the input factors.</p>
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Theoretical sensitivity indices</span>
-    <span class="n">std_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">w</span> <span class="o">*</span> <span class="n">zm</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">zm</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">std_y</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Theoretical sensitivity indices</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">row_labels</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">Nrv</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;S analytic&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># joint distributions</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">rv1</span><span class="p">,</span> <span class="n">rv2</span><span class="p">,</span> <span class="n">rv3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12367,11 +12308,7 @@ respect to each of the input factors.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Based on samples of the random input variables and 
-subsequent model evaluations, we may estimate the standard deviation
-of $\mathbf{Y}$ and compute the relative error with respect to the
-theoretical value. You may change the number of sample above,
-i.e. $N$, and see how $N$ influence the estimates.</p>
+<p>It is also possible to construct independent identical distributed random variables from any univariate variable:</p>
 
 </div>
 </div>
@@ -12381,11 +12318,10 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1">#  Expectation and variance from sampled values</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expectation and std from sampled values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;std(Y)=</span><span class="si">{:2.3f}</span><span class="s1"> and relative error=</span><span class="si">{:2.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">std_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">std_y</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mean(Y)=</span><span class="si">{:2.3f}</span><span class="s1"> and E(Y)=</span><span class="si">{:2.3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">zm</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">)))</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># creating iid variables</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">()</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Iid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12397,24 +12333,47 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that <code>Ns</code> is the size of our Monte Carlo experiment, corresponding
-to the number of times we have evaluated our simple linear model
-<a href="#eq:linear_model">(1)</a>. The evaluation of the model is normally the
-most computationally expensive part of the analysis, and for that
-reasons <code>Ns</code> is referred to as the <code>cost</code> of the analysis.</p>
-<h1 id="Conditional-variances">Conditional variances<a class="anchor-link" href="#Conditional-variances">&#182;</a></h1><p>As noted previously, the importance of a factor $Z_i$ is manifested
-the existence of a <code>shape</code> or <code>pattern</code> in the model outputs
-$Y$. Conversely, a uniform cloud of output points $Y$ as a function of
-$Z_i$ is a symptom, albeit not a proof, indicating that $Z_i$ is a
-noninfluential factor. In this section we seek to demonstrate that
-conditional variances is a usefull means to quantify the <code>shape</code> or
-<code>pattern</code> in the outputs.</p>
-<p>The shape in the outputs $Y$ for a given $Z_i$, may be seen in the
-scatterplot as of $Y$ versus $Z_i$. In particular, we may cut the
-$Z_i$-axis into slices and assess how the distribution of the outputs
-$Y$ changes from slice to slice. This is illustrated in the code
-snippet below, where the slices are identified with vertical dashed
-lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
+<p>All 64 distributions available in the chaospy package can be found in the following table:</p>
+<table border="1">
+<thead>
+<tr><th align="center">   Distributions   </th> <th align="center">     implemented     </th> <th align="center">       in chaospy      </th> <th align="center">                     </th> </tr>
+</thead>
+<tbody>
+<tr><td align="center">   Alpha                  </td> <td align="center">   Birnbaum-Sanders         </td> <td align="center">   Laplace                    </td> <td align="center">   Power log-normal         </td> </tr>
+<tr><td align="center">   Anglit                 </td> <td align="center">   Fisher-Snedecor          </td> <td align="center">   Levy                       </td> <td align="center">   Power normal             </td> </tr>
+<tr><td align="center">   Arcsinus               </td> <td align="center">   Fisk/log-logistic        </td> <td align="center">   Log-gamma                  </td> <td align="center">   Raised cosine            </td> </tr>
+<tr><td align="center">   Beta                   </td> <td align="center">   Folded Cauchy            </td> <td align="center">   Log-laplace                </td> <td align="center">   Rayleigh                 </td> </tr>
+<tr><td align="center">   Brandford              </td> <td align="center">   Folded normal            </td> <td align="center">   Log-normal                 </td> <td align="center">   Reciprocal               </td> </tr>
+<tr><td align="center">   Burr                   </td> <td align="center">   Frechet                  </td> <td align="center">   Log-uniform                </td> <td align="center">   Right-skewed Gumbel      </td> </tr>
+<tr><td align="center">   Cauchy                 </td> <td align="center">   Gamma                    </td> <td align="center">   Logistic                   </td> <td align="center">   Student-T                </td> </tr>
+<tr><td align="center">   Chi                    </td> <td align="center">   Gen. exponential         </td> <td align="center">   Lomax                      </td> <td align="center">   Triangle                 </td> </tr>
+<tr><td align="center">   Chi-square             </td> <td align="center">   Gen. extreme value       </td> <td align="center">   Maxwell                    </td> <td align="center">   Truncated exponential    </td> </tr>
+<tr><td align="center">   Double Gamma           </td> <td align="center">   Gen. gamma               </td> <td align="center">   Mielke's beta-kappa        </td> <td align="center">   Truncated normal         </td> </tr>
+<tr><td align="center">   Double Weibull         </td> <td align="center">   Gen. half-logistic       </td> <td align="center">   Nakagami                   </td> <td align="center">   Tukey-Lambda             </td> </tr>
+<tr><td align="center">   Epanechnikov           </td> <td align="center">   Gilbrat                  </td> <td align="center">   Non-central chi-squared    </td> <td align="center">   Uniform                  </td> </tr>
+<tr><td align="center">   Erlang                 </td> <td align="center">   Truncated Gumbel         </td> <td align="center">   Non-central Student-T      </td> <td align="center">   Wald                     </td> </tr>
+<tr><td align="center">   Exponential            </td> <td align="center">   Gumbel                   </td> <td align="center">   Non-central F              </td> <td align="center">   Weibull                  </td> </tr>
+<tr><td align="center">   Exponential power      </td> <td align="center">   Hypergeometric secant    </td> <td align="center">   Normal                     </td> <td align="center">   Wigner                   </td> </tr>
+<tr><td align="center">   Exponential Weibull    </td> <td align="center">   Kumaraswamy              </td> <td align="center">   Pareto (first kind)        </td> <td align="center">   Wrapped Cauchy           </td> </tr>
+</tbody>
+</table><h2 id="Step-2:-Orthogonal-Polynomials">Step 2: Orthogonal Polynomials<a class="anchor-link" href="#Step-2:-Orthogonal-Polynomials">&#182;</a></h2><div id="sec:orthogonalPolynomials"></div><p>The orthogonal polynomials can be generated with different methods, in <code>chaospy</code> there are 4 methods implemented. The
+most stable method, and therefore most advised is the <em>three terms recursion</em> method.</p>
+<table border="1">
+<thead>
+<tr><th align="center">Orthogonalization Method</th> <th align="center">             </th> </tr>
+</thead>
+<tbody>
+<tr><td align="center">   Cholesky decomposition      </td> <td align="center">   cp.orth\_chol    </td> </tr>
+<tr><td align="center">   Three terms recursion       </td> <td align="center">   cp.orth\_ttr     </td> </tr>
+<tr><td align="center">   Modified Gram-Schmidt       </td> <td align="center">   cp.orth\_gs      </td> </tr>
+</tbody>
+</table><p>Regarding the <em>three terms recursion</em> method:
+For the distributions Normal, Uniform, Gamma, Log-normal, Triangle, Beta and stochastic independent variable combinations of those,
+the three terms recursion coefficients are known.
+For all other distributions the coefficients are estimated numerically.
+The <em>three terms recursion</em> method is then also called <strong>discretized stieltjes method</strong>.</p>
+<p>The most stable method and therefore most applied method is the <strong>three terms recursion</strong> (<strong>discretized stieltjes method</strong>) method.</p>
+<p>We will look at all in a small example, try to increase the polynomial order and the instabilities of the methods become visible.</p>
 
 </div>
 </div>
@@ -12424,43 +12383,32 @@ lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of data, z-slices, and linear model</span>
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example orthogonalization schemes</span>
+<span class="c1"># a normal random variable</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">Ndz</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of slices of the Z-axes</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="c1"># the polynomial order of the orthogonal polynomials</span>
+<span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
 
-    <span class="n">Zslice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">))</span>  <span class="c1"># array for mean-values in the slices</span>
-    <span class="n">ZBndry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># array for boundaries of the slices</span>
-    <span class="n">dz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Nrv</span><span class="p">)</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_chol</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Cholesky decomposition {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Cholesky decomposition&#39;</span><span class="p">)</span>
+<span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
 
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Discretized Stieltjes / Thre terms reccursion {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Discretized Stieltjes &#39;</span><span class="p">)</span>
+<span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-        <span class="n">zmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="n">zmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>  <span class="c1"># each Z[k,:] may have different extremas</span>
-        <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">zmax</span> <span class="o">-</span> <span class="n">zmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ndz</span>
-
-        <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">Ndz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># slice Zk into Ndz slices</span>
-        <span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span> <span class="o">+</span> <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">-</span> <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">)</span> <span class="c1"># Midpoint in the slice</span>
-
-        <span class="c1"># Plot the the vertical slices with axvline</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndz</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;.75&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Plot the data</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Y</span><span class="p">[:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
-
-        <span class="n">Ymodel</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Produce the straight line</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Ymodel</span><span class="p">)</span>
-
-        <span class="n">ymin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">);</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
-    
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_gs</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Modified Gram-Schmidt {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Modified Gram-Schmidt&#39;</span><span class="p">)</span>
+<span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12472,104 +12420,18 @@ lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note, that average value of $Y$ in a very thin slice, corresponds to
-keeping $Z_i$ fixed while averaging over all output values of $Y$ due
-to all-but $Z_i$, which corresponds to the conditional expected value:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-E_{Z_{\sim i}} (Y\;|\;Z_i) 
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>For convenience we let $Z_{\sim i}$ denote <code>all-but</code> $Z_i$. Naturally,
-a measure of how much $E_{Z_{\sim i}} (Y\;|\;Z_i)$ varies in the range
-of $Z_i$ is given by the conditional variance:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Further, the variance the output $Y$ may be decomposed into:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:VarDecomp"></div><p>$$
-\begin{equation}
-\text{V}(Y) = E_{Z_i} ( V_{Z_{\sim i}} (Y \; | Z_{i})) + \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
-\label{eq:VarDecomp} \tag{12}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>A large $\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))$ will imply that
-$Z_i$ is an important factor and is therefore coined the first-order
-effect of $Z_i$ on $Y$, and its fraction of the total variation of $Y$ is expressed by $S_i$, <code>the first-order sensitivity index</code> of $Z_i$ on $Y$:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-S_i = \frac{\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))}{\text{V}(Y)}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>By <a href="#eq:VarDecomp">(12)</a>, $S_i$ is number always in the range $[0,1]$,
-and a high value implies an important factor.</p>
+<h2 id="Step-3.:-Linear-regression">Step 3.: Linear regression<a class="anchor-link" href="#Step-3.:-Linear-regression">&#182;</a></h2><p>The linear regression method requires to conduct the three following steps:</p>
+<ol>
+<li><p>Generation of samples</p>
+</li>
+<li><p><code>Evaluation of the model for all samples</code></p>
+</li>
+<li><p>Generation of the polynomial chaos expansion</p>
+</li>
+</ol>
+<p>In the following we will not consider the model evaluation.</p>
+<h3 id="Step-3.a:-Sampling">Step 3.a: Sampling<a class="anchor-link" href="#Step-3.a:-Sampling">&#182;</a></h3><div id="sec:sampling"></div><p>Once a random variable is defined or a joint random variable, also referred as distribution here, the following
+method can be used to generate as set of samples:</p>
 
 </div>
 </div>
@@ -12579,55 +12441,9 @@ and a high value implies an important factor.</p>
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of averaged y-values per slice, with averaged data</span>
-
-    <span class="n">Zsorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-    <span class="n">Ysorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-    <span class="n">YsliceMean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">))</span>
-
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="c1"># sort values for Zk, </span>
-        <span class="n">sidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span> <span class="c1">#sidx holds the indexes for the sorted values of Zk</span>
-        <span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">sidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">Ysorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">sidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Ysorted is Y for the sorted Zk</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndz</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;.75&#39;</span><span class="p">)</span>
-
-            <span class="c1"># find indexes of z-values in the current slice</span>
-            <span class="n">zidx_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">zidx_range</span><span class="p">):</span>  <span class="c1"># check if range has elements</span>
-                <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Ysorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">zidx_range</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># set value to None if noe elements in z-slice</span>
-                <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        
-        
-
-        <span class="c1"># # Plot linear model</span>
-        <span class="n">Nmodel</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">zmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="n">zmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-
-        <span class="n">zvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">Nmodel</span><span class="p">)</span>
-        <span class="c1">#linear_model</span>
-        <span class="n">Ymodel</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">zvals</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">zvals</span><span class="p">,</span> <span class="n">Ymodel</span><span class="p">)</span>
-
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
-    
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
-    
-    <span class="n">SpoorMan</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>   
-    <span class="nb">print</span><span class="p">(</span><span class="n">SpoorMan</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># sampling in chaospy</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+u.sample<span class="o">?</span>
 </pre></div>
 
 </div>
@@ -12639,13 +12455,8 @@ and a high value implies an important factor.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="How-to-compute-the-sensitivity-indices">How to compute the sensitivity indices<a class="anchor-link" href="#How-to-compute-the-sensitivity-indices">&#182;</a></h1><p>Below we will demostrate how the Sobol sensitivity indices may be
-computed with two approaches; the Monte Carlo method and the
-polynomial chaos expansion method.</p>
-<h3 id="Monte-Carlo">Monte Carlo<a class="anchor-link" href="#Monte-Carlo">&#182;</a></h3><p>Below some code snippets are provided to illustrate how we may compute
-the Soboil indices with the MCM. For the interested reader we have also
-writen a seperate and more detailed notebook <a href="monte_carlo.ipynb">A brief introduction to
-UQ and SA with the Monte Carlo method</a>.</p>
+<p>The method takes the arguments <strong>size</strong> which is the number of samples and <strong>rule</strong> which is the applied sampling scheme.
+The following example shows the creation of 2 set of samples for the sampling schemes <em>(Pseudo-)Random</em> and <em>Hammersley</em>.</p>
 
 </div>
 </div>
@@ -12655,66 +12466,27 @@ UQ and SA with the Monte Carlo method</a>.</p>
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate sens indices of non additive model</span>
-<span class="k">def</span> <span class="nf">mc_sensitivity_linear</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">sample_method</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sampling</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+<span class="n">number_of_samples</span> <span class="o">=</span> <span class="mi">350</span>
+<span class="n">samples_random</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+<span class="n">samples_hammersley</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
 
-    <span class="n">Nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)</span>
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Random&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">samples_random</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Uniform 1&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Uniform 2&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
 
-    <span class="c1"># 1. Generate sample matrices</span>
-    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">generate_sample_matrices_mc</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">Nrv</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">sample_method</span><span class="p">)</span>
-
-    <span class="c1"># 2. Evaluate the model</span>
-    <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span> <span class="o">=</span> <span class="n">evaluate_linear_model</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-
-    <span class="c1"># 3. Approximate the sensitivity indices</span>
-    <span class="n">S</span><span class="p">,</span> <span class="n">ST</span> <span class="o">=</span> <span class="n">calculate_sensitivity_indices_mc</span><span class="p">(</span><span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">ST</span>
-<span class="c1"># end calculate sens indices of non additive model</span>
-
-
-<span class="c1"># model evaluation</span>
-<span class="k">def</span> <span class="nf">evaluate_linear_model</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-
-    <span class="n">number_of_parameters</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">number_of_sampless</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># 1. evaluate sample matrices A</span>
-    <span class="n">Y_A</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
-
-    <span class="c1"># 2. evaluate sample matrices B</span>
-    <span class="n">Y_B</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
-
-    <span class="c1"># 3. evaluate sample matrices C</span>
-    <span class="n">Y_C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">number_of_sampless</span><span class="p">,</span> <span class="n">number_of_parameters</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_parameters</span><span class="p">):</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="n">Y_C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Monte Carlo</span>
-    <span class="c1"># get joint distributions</span>
-    <span class="n">jpdf</span> <span class="o">=</span> <span class="n">generate_distributions</span><span class="p">(</span><span class="n">zm</span><span class="p">)</span>
-
-    <span class="n">Ns_mc</span> <span class="o">=</span> <span class="mi">1000000</span>
-    <span class="c1"># calculate sensitivity indices</span>
-    <span class="n">A_s</span><span class="p">,</span> <span class="n">B_s</span><span class="p">,</span> <span class="n">C_s</span><span class="p">,</span> <span class="n">f_A</span><span class="p">,</span> <span class="n">f_B</span><span class="p">,</span> <span class="n">f_C</span><span class="p">,</span> <span class="n">S_mc</span><span class="p">,</span> <span class="n">ST_mc</span> <span class="o">=</span> <span class="n">mc_sensitivity_linear</span><span class="p">(</span><span class="n">Ns_mc</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-
-    <span class="n">Sensitivities</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">S_mc</span><span class="p">,</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">row_labels</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">Nrv</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First Order Indices&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sensitivities</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Smc&#39;</span><span class="p">,</span><span class="s1">&#39;Sa&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">fig2</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Hammersley sampling&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">samples_hammersley</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Uniform 1&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Uniform 2&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12726,8 +12498,54 @@ UQ and SA with the Monte Carlo method</a>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Polynomial-chaos-expansion">Polynomial chaos expansion<a class="anchor-link" href="#Polynomial-chaos-expansion">&#182;</a></h3><p>As for the MCM some code snippets are provided to illustrate how we may compute
-the Soboil indices with the polynomial chaos expansions using <code>chaospy</code>. A more in dept treatment of <code>chaospy</code> and its usage is provided in the separate notebook <a href="introduction_gpc.ipynb">A practical introduction to polynomial chaos with the chaospy package</a>.</p>
+<p>All sampling schemes implemented in chaospy are listed in the following table:</p>
+<p><table border="1"></p>
+<p><thead></p>
+<p><tr><th align="center">Key</th> <th align="center">      Name      </th> <th align="center">Nested</th> </tr>
+&lt;/thead&gt;</p>
+<p><tbody></p>
+<p><tr><td align="center">   C      </td> <td align="center">   Chebyshev nodes     </td> <td align="center">   no        </td> </tr></p>
+<p><tr><td align="center">   NC     </td> <td align="center">   Nested Chebyshev    </td> <td align="center">   yes       </td> </tr></p>
+<p><tr><td align="center">   K      </td> <td align="center">   Korobov             </td> <td align="center">   no        </td> </tr></p>
+<p><tr><td align="center">   R      </td> <td align="center">   (Pseudo-)Random     </td> <td align="center">   no        </td> </tr></p>
+<p><tr><td align="center">   RG     </td> <td align="center">   Regular grid        </td> <td align="center">   no        </td> </tr></p>
+<p><tr><td align="center">   NG     </td> <td align="center">   Nested grid         </td> <td align="center">   yes       </td> </tr></p>
+<p><tr><td align="center">   L      </td> <td align="center">   Latin hypercube     </td> <td align="center">   no        </td> </tr></p>
+<p><tr><td align="center">   S      </td> <td align="center">   Sobol               </td> <td align="center">   yes       </td> </tr></p>
+<p><tr><td align="center">   H      </td> <td align="center">   Halton              </td> <td align="center">   yes       </td> </tr></p>
+<p><tr><td align="center">   M      </td> <td align="center">   Hammersley          </td> <td align="center">   yes       </td> </tr>
+&lt;/tbody&gt;
+&lt;/table&gt;</p>
+<h3 id="Step-3.a.i:-Importing-and-exporting-samples">Step 3.a.i: Importing and exporting samples<a class="anchor-link" href="#Step-3.a.i:-Importing-and-exporting-samples">&#182;</a></h3><p>It may be useful to export the samples from <code>chaospy</code> for use in another program. The most useful format for exporting the samples likely depends on the external program, but it is quite simple to save the samples as a <code>CSV</code> file with a delimeter of your choice:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example save samples to file</span>
+<span class="c1"># Creates a csv file where each row corresponds to the sample number and each column with teh variables in the joint distribution</span>
+<span class="n">csv_file</span> <span class="o">=</span> <span class="s2">&quot;csv_samples.csv&quot;</span>
+<span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;u1&quot;</span><span class="p">,</span> <span class="s2">&quot;u2&quot;</span><span class="p">]</span>
+<span class="n">header</span> <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">samples_random</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each row of the csv file now contains a single sample from the joint distribution with the columns corresponding to each component.</p>
+<p>Now you may evaluate these samples with an external program and save the resulting data into a similarly formatted <code>CSV</code> file. Again each row should correspond to a single sample value and each column to different components of the model output.</p>
 
 </div>
 </div>
@@ -12737,30 +12555,11 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos computations</span>
-    <span class="n">Ns_pc</span> <span class="o">=</span> <span class="mi">80</span>
-    <span class="n">samples_pc</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns_pc</span><span class="p">)</span>
-    <span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="n">Y_pc</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">samples_pc</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">approx</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">samples_pc</span><span class="p">,</span> <span class="n">Y_pc</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-
-    <span class="n">exp_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="n">std_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Std</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Statistics polynomial chaos</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        E(Y)  |  std(Y) </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pc  : </span><span class="si">{:2.5f}</span><span class="s1"> | </span><span class="si">{:2.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exp_pc</span><span class="p">),</span> <span class="n">std_pc</span><span class="p">))</span>
-    
-    
-    <span class="n">S_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-
-    <span class="n">Sensitivities</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">S_mc</span><span class="p">,</span><span class="n">S_pc</span><span class="p">,</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First Order Indices&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sensitivities</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Smc&#39;</span><span class="p">,</span><span class="s1">&#39;Spc&#39;</span><span class="p">,</span><span class="s1">&#39;Sa&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-
-<span class="c1">#     print(&quot;\nRelative errors&quot;)</span>
-<span class="c1">#     rel_errors=np.column_stack(((S_mc - s**2)/s**2,(S_pc - s**2)/s**2))</span>
-<span class="c1">#     print(pd.DataFrame(rel_errors,columns=[&#39;Error Smc&#39;,&#39;Error Spc&#39;],index=row_labels).round(3))</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example load samples from file</span>
+<span class="c1"># loads a csv file where the samples/or model evaluations for each sample are saved</span>
+<span class="c1"># with one sample per row. Multiple components ofoutput can be stored as separate columns </span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;external_evaluations.csv&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12768,28 +12567,453 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-3.c:-Polynomial-Chaos-Expansion">Step 3.c: Polynomial Chaos Expansion<a class="anchor-link" href="#Step-3.c:-Polynomial-Chaos-Expansion">&#182;</a></h3><p>After the model is evaluated for all samples, the polynomial chaos expansion can be generated with the following method:</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos convergence</span>
-    <span class="n">Npc_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="p">[]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># linear regression in chaospy</span>
+cp.fit_regression<span class="o">?</span>
+</pre></div>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Npc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Npc_list</span><span class="p">):</span>
-        <span class="n">Zpc</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Npc</span><span class="p">)</span>
-        <span class="n">Ypc</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">Zpc</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="n">Npol</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_chol</span><span class="p">(</span><span class="n">Npol</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-        <span class="n">approx</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">Zpc</span><span class="p">,</span> <span class="n">Ypc</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-        <span class="n">s_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-        <span class="n">error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LA</span><span class="o">.</span><span class="n">norm</span><span class="p">((</span><span class="n">s_pc</span> <span class="o">-</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</div>
+</div>
+</div>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">Npc_list</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
-    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Nr Z&#39;</span><span class="p">)</span>
-    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;L2-norm of error in Sobol indices&#39;</span><span class="p">)</span>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following we show a complete example for polynomial chaos expansion using the linear regression.
+The model applied the very simple mathematical expression:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:dummy_model"></div><p>$$
+\begin{equation}
+ y(z_1, z_2) = z_1 + z_1 z_2
+\label{eq:dummy_model} \tag{9}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The random variables for $Z_1, Z_2$ are defined as simple uniform random variables:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:dummy_rv"></div><p>$$
+\begin{equation}
+Z_1 = \mbox{U}(0,1), \quad Z_2 = \mbox{U}(0,1)
+\label{eq:dummy_rv} \tag{10}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The mean of this should be $\frac{3}{4}$, the variance should be $\frac{31}{144}$ and the sensitivites to $Z_1$ and $Z_2$ are respectively $\frac{3}{31}$ and $\frac{27}{31}$.</p>
+<p>Here is the annotated example code with all steps required to generate a polynomial chaos expansion with
+linear regression:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example linear regression</span>
+<span class="c1"># 1. define marginal and joint distributions</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+
+<span class="c1"># 2. generate orthogonal polynomials</span>
+<span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="c1"># 3.1 generate samples</span>
+<span class="n">number_of_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">cp</span><span class="o">.</span><span class="n">bertran</span><span class="o">.</span><span class="n">terms</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">))</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+
+<span class="c1"># 3.2 evaluate the simple model for all samples</span>
+<span class="n">model_evaluations</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># 3.3 use regression to generate the polynomial chaos expansion</span>
+<span class="n">gpce_regression</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">model_evaluations</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-4:-Pseudo-spectral-projection">Step 4: Pseudo-spectral projection<a class="anchor-link" href="#Step-4:-Pseudo-spectral-projection">&#182;</a></h2><h3 id="Step-4.a:-Quadrature-nodes-and-weights">Step 4.a: Quadrature nodes and weights<a class="anchor-link" href="#Step-4.a:-Quadrature-nodes-and-weights">&#182;</a></h3><div id="sec:quadrature"></div><p>Once a random variable is defined or joint random variables, also referred as distribution here, the following
+method can be used to generate nodes and weights for different quadrature methods:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># quadrature in polychaos</span>
+cp.generate_quadrature<span class="o">?</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will look at the following arguments of the method: <strong>order</strong> is the order of the quadrature, <strong>domain</strong> is
+the , <strong>rule</strong> is the <em>name</em> or <em>key</em> of the quadrature rule to apply.</p>
+<p>In the following example we look at some quadrature nodes for the same uniform variables as for the sampling,
+for Optimal Gaussian quadrature and Clenshaw-Curtis quadrature.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example quadrature</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+
+<span class="n">order</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">nodes_gaussian</span><span class="p">,</span> <span class="n">weights_gaussian</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+<span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">weights_clenshaw</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes gaussian quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_gaussian</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">nodes_gaussian</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Uniform 1&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Uniform 2&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following all quadrature rules implemented in chaospy are highlighted:</p>
+<p><table border="1"></p>
+<p><thead></p>
+<p><tr><th align="center"> Collection of quadrature rules</th> <th align="center">   Name  </th> <th align="center">Key</th> </tr>
+&lt;/thead&gt;</p>
+<p><tbody></p>
+<p><tr><td align="center">   Optimal Gaussian quadrature        </td> <td align="center">   Gaussian     </td> <td align="center">   G      </td> </tr></p>
+<p><tr><td align="center">   Gauss-Legendre quadrature          </td> <td align="center">   Legendre     </td> <td align="center">   E      </td> </tr></p>
+<p><tr><td align="center">   Clenshaw-Curtis quadrature         </td> <td align="center">   Clenshaw     </td> <td align="center">   C      </td> </tr></p>
+<p><tr><td align="center">   Leja quadrature                    </td> <td align="center">   Leja         </td> <td align="center">   J      </td> </tr></p>
+<p><tr><td align="center">   Hermite Genz-Keizter 16 rule       </td> <td align="center">   Genz         </td> <td align="center">   Z      </td> </tr></p>
+<p><tr><td align="center">   Gauss-Patterson quadrature rule    </td> <td align="center">   Patterson    </td> <td align="center">   P      </td> </tr>
+&lt;/tbody&gt;
+&lt;/table&gt;
+It is also possible to use sparse grid quadrature. For this purpose Clenshaw-Curtis method is advised since it is nested.</p>
+<p>In the following example we show sparse vs. normal quadrature nodes:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sparse grid quadrature</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+
+<span class="n">order</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">weights_clenshaw</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="n">nodes_clenshaw_sparse</span><span class="p">,</span> <span class="n">weights_clenshaw_sparse</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes normal clenshaw-curtis quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature with sparse grid : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw_sparse</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">nodes_clenshaw_sparse</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Uniform 1&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Uniform 2&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-4.c:-Polynomial-Chaos-Expansion">Step 4.c: Polynomial Chaos Expansion<a class="anchor-link" href="#Step-4.c:-Polynomial-Chaos-Expansion">&#182;</a></h3><p>After the model is evaluated for all integration nodes, the polynomial chaos expansion can be generated with the following method:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># spectral projection in chaospy</span>
+cp.fit_quadrature<span class="o">?</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following we show again a complete example for polynomial chaos expansion using the pseudo spectral approach to calculate the
+expansion coefficients.
+The model applied the same simple mathematical expression as before:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:dummy_model_repeat"></div><p>$$
+\begin{equation}
+ y(z_1, z_2) = z_1 + z_1 z_2
+\label{eq:dummy_model_repeat} \tag{11}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The random variables for $Z_1, Z_2$ are defined as simple uniform random variables:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:dummy_rv_repeat"></div><p>$$
+\begin{equation}
+Z_1 = \mbox{U}(0,1), \quad Z_2 = \mbox{U}(0,1)
+\label{eq:dummy_rv_repeat} \tag{12}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example spectral projection</span>
+<span class="c1"># 1. define marginal and joint distributions</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+
+<span class="c1"># 2. generate orthogonal polynomials</span>
+<span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="c1"># 4.1 generate quadrature nodes and weights</span>
+<span class="n">order</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">nodes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+
+<span class="c1"># 4.2 evaluate the simple model for all nodes</span>
+<span class="n">model_evaluations</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># 4.3 use quadrature to generate the polynomial chaos expansion</span>
+<span class="n">gpce_quadrature</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_quadrature</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">model_evaluations</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Step-5:-Statistical-Analysis">Step 5: Statistical Analysis<a class="anchor-link" href="#Step-5:-Statistical-Analysis">&#182;</a></h2><div id="sec:statistical_analysis"></div><p>Once the polynomial chaos expansion is created either with <strong>pseudo-spectral projection</strong> or with <strong>regression</strong> method
+The calculation of statistics is straight forward.
+The following listing gives an overview of all available methods take all the same input parameter the <strong>polynomial-expansion</strong> and
+the <strong>joint-distribution</strong> (see also example below).</p>
+<p>Note, that one can also calculate uncertainty statistics on distributions only as well.</p>
+<h3 id="Uncertainty-quantification">Uncertainty quantification<a class="anchor-link" href="#Uncertainty-quantification">&#182;</a></h3><ul>
+<li><p>Expected value: <code>cp.E</code></p>
+</li>
+<li><p>Variance: <code>cp.Var</code></p>
+</li>
+<li><p>Standard deviation: <code>cp.Std</code></p>
+</li>
+<li><p>Curtosis: <code>cp.Kurt</code></p>
+</li>
+<li><p>Skewness: <code>cp.Skew</code></p>
+</li>
+<li><p>Distribution of Y: <code>cp.QoI_Dist</code></p>
+</li>
+<li><p>Prediction intervals: <code>cp.Perc</code>, which is a method to calculate percentiles: an additional argument defining the percentiles needs to be passed.</p>
+</li>
+</ul>
+<p>If multiple quantities of interest are available:</p>
+<ul>
+<li><p>Covariance matrix: <code>cp.Cov</code></p>
+</li>
+<li><p>Correlation matrix: <code>cp.Corr</code></p>
+</li>
+<li><p>Spearman correlation: <code>cp.Spearman</code></p>
+</li>
+<li><p>Auto-correlation function: <code>cp.Acf</code></p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example uq</span>
+<span class="n">exp_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+<span class="n">exp_ps</span> <span class="o">=</span>  <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="n">std_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Std</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+<span class="n">str_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Std</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="n">prediction_interval_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Perc</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">joint_distribution</span><span class="p">)</span>
+<span class="n">prediction_interval_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Perc</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Expected values   Standard deviation            90 % Prediction intervals</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39; E_reg |  E_ps     std_reg |  std_ps                pred_reg |  pred_ps&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;  {} | {}       {:&gt;6.3f} | {:&gt;6.3f}       {} | {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exp_reg</span><span class="p">,</span>
+                                                                  <span class="n">exp_ps</span><span class="p">,</span>
+                                                                  <span class="n">std_reg</span><span class="p">,</span>
+                                                                  <span class="n">str_ps</span><span class="p">,</span>
+                                                                  <span class="p">[</span><span class="s2">&quot;{:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_reg</span><span class="p">],</span>
+                                                                  <span class="p">[</span><span class="s2">&quot;{:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_ps</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Sensitivity-analysis">Sensitivity analysis<a class="anchor-link" href="#Sensitivity-analysis">&#182;</a></h3><p>The variance bases sensitivity indices can be calculated directly from the expansion.
+The <code>chaospy</code> package provides the following methods:</p>
+<ul>
+<li><p>first order indices: <code>cp.Sens_m</code></p>
+</li>
+<li><p>second order indices: <code>cp.Sens_m2</code></p>
+</li>
+<li><p>total indices: <code>cp.Sens_t</code></p>
+</li>
+</ul>
+<p>Here is an example for the first and total indices for both expansions:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sens</span>
+<span class="n">sensFirst_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+<span class="n">sensFirst_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="n">sensT_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_t</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+<span class="n">sensT_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_t</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;First Order Indices           Total Sensitivity Indices</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;       S_reg |  S_ps                 ST_reg |  ST_ps  </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">s_reg</span><span class="p">,</span> <span class="n">s_ps</span><span class="p">,</span> <span class="n">st_reg</span><span class="p">,</span> <span class="n">st_ps</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sensFirst_reg</span><span class="p">,</span> <span class="n">sensFirst_ps</span><span class="p">,</span> <span class="n">sensT_reg</span><span class="p">,</span> <span class="n">sensT_ps</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;S_{} : {:&gt;6.3f} | {:&gt;6.3f}         ST_{} : {:&gt;6.3f} | {:&gt;6.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s_reg</span><span class="p">,</span> <span class="n">s_ps</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">st_reg</span><span class="p">,</span> <span class="n">st_ps</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12802,10 +13026,24 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="References">References<a class="anchor-link" href="#References">&#182;</a></h1><ol>
-<li><div id="saltelli_global_2008"></div> <strong>A. (Andrea) Saltelli</strong>. 
-<em>Global Sensitivity Analysis : the Primer</em>,
-John Wiley,
-2008.</li>
+<li><p><div id="xiu_numerical_2010"></div> <strong>D. Xiu</strong>. 
+<em>Numerical Methods for Stochastic Computations: a Spectral Method Approach</em>,
+Princeton University Press,
+2010.</p>
+</li>
+<li><p><div id="smith_uncertainty_2013"></div> <strong>R. C. Smith</strong>. 
+<em>Uncertainty Quantification: Theory, Implementation, and Applications</em>,
+<em>Computational science and engineering series</em>,
+Society for Industrial and Applied Mathematics,
+2013.</p>
+</li>
+<li><p><div id="feinberg_2015"></div> <strong>J. Feinberg and H. P. Langtangen</strong>. 
+Chaospy: An open source tool for designing methods of uncertainty quantification,
+<em>Journal of Computational Science</em>,
+11,
+pp. 46-57,
+2015.</p>
+</li>
 </ol>
 
 </div>

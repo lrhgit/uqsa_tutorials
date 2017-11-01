@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>sensitivity_introduction</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>wall_models</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11778,10 +11778,13 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- dom:TITLE: A practical introduction to sensitivity analysis --></p>
-<h1 id="A-practical-introduction-to-sensitivity-analysis">A practical introduction to sensitivity analysis<a class="anchor-link" href="#A-practical-introduction-to-sensitivity-analysis">&#182;</a></h1><p><!-- dom:AUTHOR: Leif Rune Hellevik at Department of Structural Engineering, NTNU -->
-<!-- Author: --> <strong>Leif Rune Hellevik</strong>, Department of Structural Engineering, NTNU</p>
-<p>Date: <strong>Oct 26, 2017</strong></p>
+<p><!-- dom:TITLE: Uncertainty quantification and sensitivity analysis for arterial wall models --></p>
+<h1 id="Uncertainty-quantification-and-sensitivity-analysis-for-arterial-wall-models">Uncertainty quantification and sensitivity analysis for arterial wall models<a class="anchor-link" href="#Uncertainty-quantification-and-sensitivity-analysis-for-arterial-wall-models">&#182;</a></h1><p><!-- dom:AUTHOR: Vinzenz Gregor Eck at Expert Analytics, Oslo -->
+<!-- Author: --><br>
+<strong>Vinzenz Gregor Eck</strong>, Expert Analytics, Oslo<br>
+<!-- dom:AUTHOR: Jacob Sturdy at Department of Structural Engineering, NTNU -->
+<!-- Author: --> <strong>Jacob Sturdy</strong>, Department of Structural Engineering, NTNU</p>
+<p>Date: <strong>Jun 27, 2017</strong></p>
 
 </div>
 </div>
@@ -11816,6 +11819,7 @@ div#notebook {
 <span class="c1"># import seaborn as sns # sets another style</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
+
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">)</span>
 
 <span class="c1"># font = {&#39;family&#39; : &#39;sans-serif&#39;,</span>
@@ -11834,15 +11838,14 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import modules</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">chaospy</span> <span class="k">as</span> <span class="nn">cp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
-<span class="kn">import</span> <span class="nn">chaospy</span> <span class="k">as</span> <span class="nn">cp</span>
-<span class="kn">from</span> <span class="nn">sensitivity_examples_nonlinear</span> <span class="k">import</span> <span class="n">generate_distributions</span>
 <span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">generate_sample_matrices_mc</span>
 <span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">calculate_sensitivity_indices_mc</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">_operator</span> <span class="k">import</span> <span class="n">index</span>
+<span class="n">unit_mmhg_pa</span> <span class="o">=</span> <span class="mf">133.3</span>
+<span class="n">unit_pa_mmhg</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">unit_mmhg_pa</span>
+<span class="n">unit_cm2_m2</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mf">100.</span> <span class="o">/</span> <span class="mf">100.</span>
+<span class="n">unit_m2_cm2</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">unit_cm2_m2</span>
 </pre></div>
 
 </div>
@@ -11854,7 +11857,15 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="A-simple-linear-model">A simple linear model<a class="anchor-link" href="#A-simple-linear-model">&#182;</a></h1><p>As an simple linear model example consider:</p>
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><div id="sec:introduction"></div>
+The arterial wall models we are investigating in this part, are used to describe the (visco-)elastic behaviour of arteries in one-dimensional
+simulations of the cardiovascular system.
+
+# Arterial Wall Models
+<div id="sec:polynomialChaos"></div><p>The elastic wall models are simplified algebraic functions $A(P)$ (<a href="#eck2015stochastic;@boileau_benchmark_2015">[eck2015stochastic;@boileau_benchmark_2015]</a>),
+which state the arterial lumen area $A$ as function of transmural pressure $P$.</p>
+<p>For the calibration of the applied wall models, the wave speed in an arterial segment is required.
+The wave speed is given from fluid dynamics equations for one-dimensional arteries (<a href="#eck2015stochastic">[eck2015stochastic]</a>):</p>
 
 </div>
 </div>
@@ -11864,10 +11875,10 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:linear_model"></div><p>$$
+<div id="eq:defwaveSpeed"></div><p>$$
 \begin{equation}
-Y = \sum_{i=1}^{r} \Omega_i \, Z_i
-\label{eq:linear_model} \tag{1}
+\label{eq:defwaveSpeed} \tag{1}
+c(P) = \sqrt{\frac{A(P)}{\rho\ C(P)}},
 \end{equation}
 $$</p>
 
@@ -11878,34 +11889,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>where the input factors are $\mathbf{X} = (\Omega_1, \Omega_2, \ldots,
-\Omega_r, Z_1, Z_2, \ldots, Z_r)$. For simplicity we assume that the
-model output $Y$ of <a href="#eq:linear_model">(1)</a> is a single variable and
-that the $\Omega s$ are fixed coefficients or weights.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
- \Omega_1=\Omega_2=\ldots=\text{constant}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Consequently, the true factors of <a href="#eq:linear_model">(1)</a> are just
-$(Z_1, Z_2, \ldots, Z_r)$. The individual variables
-$Z_i$ are taken to normally distributed with mean zero</p>
+<p>with blood density $\rho= 1050\ [kg\ m^{-3}]$ and compliance $C(P) = dA / dP$.</p>
+<h2 id="Quadratic-model"><em>Quadratic</em> model<a class="anchor-link" href="#Quadratic-model">&#182;</a></h2><p>The <em>Quadratic</em> area-pressure relationship (<a href="#sherwin2003">[sherwin2003]</a>) is defined as:</p>
 
 </div>
 </div>
@@ -11915,9 +11900,11 @@ $Z_i$ are taken to normally distributed with mean zero</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:NZi"></div><p>$$
-\begin{equation} Z_i \sim N(0, \sigma_{Z_i}), \qquad i=1,2, \ldots, r
-\label{eq:NZi} \tag{2} \end{equation}
+<div id="eq:lapArea"></div><p>$$
+\begin{equation}
+A(P) = \left((P-P_s) \frac{A_s}{\lambda} + \sqrt{A_s} \right)^2,
+\label{eq:lapArea} \tag{2}
+\end{equation}
 $$</p>
 
 </div>
@@ -11927,10 +11914,9 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As the predicted value $Y$ of the model in <a href="#eq:linear_model">(1)</a> is
-linear combination of normally distributed factors, it is easy to
-verify (see exercices in <a href="#saltelli_global_2008">[saltelli_global_2008]</a>) that $Y$ also will
-be normally distributed with:</p>
+<p>where $\lambda$ is referred to as the stiffness coefficient and $A_s$
+is the area at the reference pressure $P_s$.</p>
+<p>The stiffness coefficient $\lambda$ is defined as:</p>
 
 </div>
 </div>
@@ -11940,10 +11926,10 @@ be normally distributed with:</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- Equation labels as ordinary links --></p>
-<div id="eq:analytic_mean_std"></div><p>$$
+<div id="_auto1"></div><p>$$
 \begin{equation}
-\bar{y} = \sum_{i=1}^{r} \Omega_i \; \bar{z}_i, \qquad \sigma_Y = \sqrt{\sum_{i=1}^{r} \Omega_i^2 \, \sigma_{Z_i}^2}
-\label{eq:analytic_mean_std} \tag{3}    
+\lambda = \frac{2 \rho c_s^2 A_s}{\sqrt{A_s}}
+\label{_auto1} \tag{3}
 \end{equation}
 $$</p>
 
@@ -11954,30 +11940,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Furthermore, we order the factors from the most certain to the less
-certain, i.e.:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
- \sigma_{Z_1} &lt;  \sigma_{Z_2} &lt;  \ldots  &lt;  \sigma_{Z_r}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Scatterplots-versus-derivatives">Scatterplots versus derivatives<a class="anchor-link" href="#Scatterplots-versus-derivatives">&#182;</a></h1><p>We have implemented the simple linear model in <a href="#eq:linear_model">(1)</a> in python as:</p>
+<p>The model is implemented in the following function:</p>
 
 </div>
 </div>
@@ -11987,9 +11950,35 @@ $$</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start the linear model</span>
-<span class="k">def</span> <span class="nf">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># begin quadratic area model</span>
+<span class="k">def</span> <span class="nf">quadratic_area_model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculate the arterial vessel wall for a set pressure range</span>
+<span class="sd">    from 75 to 140 mmHg for a given set of reference wave speeds</span>
+<span class="sd">    area and pressure.</span>
+
+<span class="sd">    :param</span>
+<span class="sd">        pressure_range: np.array</span>
+<span class="sd">            pressure range for which to calculate the arterial area</span>
+
+<span class="sd">        samples: np.array with shape (4:n_samples)</span>
+<span class="sd">            sample matrix where</span>
+<span class="sd">            first indices correspond to</span>
+<span class="sd">                a_s: reference area</span>
+<span class="sd">                c_s: reference waves seed</span>
+<span class="sd">                p_s: reference pressure</span>
+<span class="sd">                rho: blood density</span>
+<span class="sd">            and n_samples to the number of samples</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        arterial pressure : np.array</span>
+<span class="sd">            of size n_samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pressure_range</span> <span class="o">=</span> <span class="n">pressure_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pressure_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">a_s</span><span class="p">,</span> <span class="n">c_s</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">samples</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">rho</span><span class="o">*</span><span class="n">c_s</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a_s</span><span class="p">)</span><span class="o">*</span><span class="n">a_s</span>
+    <span class="c1">#C_Laplace = (2. * ((P - Ps) * As / betaLaplace + np.sqrt(As))) * As / betaLaplace</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">pressure_range</span> <span class="o">-</span> <span class="n">p_s</span><span class="p">)</span><span class="o">*</span><span class="n">a_s</span><span class="o">/</span><span class="n">beta</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a_s</span><span class="p">))</span><span class="o">**</span><span class="mf">2.</span>
 </pre></div>
 
 </div>
@@ -12001,10 +11990,57 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To hold the mean and the standard deviation of all the input factors
-we use a numpy-array of size $r\times 2$, with one row per factor,
-where the first column holds the mean whereas the second column holds
-the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-vector.</p>
+<h2 id="Logarithmic-model"><em>Logarithmic</em> model<a class="anchor-link" href="#Logarithmic-model">&#182;</a></h2><p>The <em>Logarithmic</em> area-pressure relationship (<a href="#Hayashi1980">[Hayashi1980]</a>) is defined as:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="eq:expArea"></div><p>$$
+\begin{equation}
+A(P) = A_s \left( 1 + \frac{1}{\beta} ln \left(\frac{P}{P_s}\right) \right)^2,
+\label{eq:expArea} \tag{4}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>where $\beta$ is called the stiffness coefficient and $A_s$ is the
+area at the reference pressure $P_s$.</p>
+<p>The stiffness coefficient $\beta$ is defined as:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto2"></div><p>$$
+\begin{equation}
+\beta = \frac{2\ \rho c_s^2}{P_s}
+\label{_auto2} \tag{5}
+\end{equation}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The model is implemented in the following function:</p>
 
 </div>
 </div>
@@ -12014,20 +12050,35 @@ the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-v
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Set mean (column 0) and standard deviations (column 1) for each factor z. Nrv=nr. rows</span>
-    <span class="n">Nrv</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># number of random variables </span>
-    <span class="n">zm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nrv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># begin exponential area model</span>
+<span class="k">def</span> <span class="nf">logarithmic_area_model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculate the arterial vessel wall for a set pressure range</span>
+<span class="sd">    from 75 to 140 mmHg for a given set of reference wave speeds</span>
+<span class="sd">    area and pressure.</span>
 
-    <span class="c1"># The above &quot;list comprehension&quot; is equivalent to the next for lines</span>
-    <span class="c1"># zm = np.zeros((Nrv, 2))</span>
-    <span class="c1"># zm[0, 1] = 1</span>
-    <span class="c1"># zm[1, 1] = 2</span>
-    <span class="c1"># zm[2, 1] = 3</span>
-    <span class="c1"># zm[3, 1] = 4</span>
+<span class="sd">    :param</span>
+<span class="sd">        pressure_range: np.array</span>
+<span class="sd">            pressure range for which to calculate the arterial area</span>
 
-    <span class="c1"># Set the weight</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">Nrv</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span>
+<span class="sd">        samples: np.array with shape (4:n_samples)</span>
+<span class="sd">            sample matrix where</span>
+<span class="sd">            first indices correspond to</span>
+<span class="sd">                a_s: reference area</span>
+<span class="sd">                c_s: reference waves seed</span>
+<span class="sd">                p_s: reference pressure</span>
+<span class="sd">                rho: blood density</span>
+<span class="sd">            and n_samples to the number of samples</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        arterial pressure : np.array</span>
+<span class="sd">            of size n_samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pressure_range</span> <span class="o">=</span> <span class="n">pressure_range</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pressure_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">a_s</span><span class="p">,</span> <span class="n">c_s</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">samples</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">rho</span><span class="o">*</span><span class="n">c_s</span><span class="o">**</span><span class="mf">2.</span><span class="o">/</span><span class="n">p_s</span>
+    <span class="c1">#C_hayashi = 2.0 * As / betaHayashi * (1.0 + np.log(P / Ps) / betaHayashi) / P</span>
+    <span class="k">return</span> <span class="n">a_s</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">/</span> <span class="n">p_s</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span>
 </pre></div>
 
 </div>
@@ -12039,7 +12090,7 @@ the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-v
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We may now perform a Monte Carlo experiment on our model by generating $N$ samples from the distributions of each factor and an input sample is thus produced:</p>
+<h2 id="Comparison">Comparison<a class="anchor-link" href="#Comparison">&#182;</a></h2><p>For a comparison of the wall models, we set the reference values to:</p>
 
 </div>
 </div>
@@ -12048,19 +12099,13 @@ the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-v
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:mc_sample"></div><p>$$
-\begin{equation}
-\mathbf{Z} = \left [
-\begin{array}{cccc}
-Z_{1,1} &amp; Z_{1,2}  &amp; \ldots &amp; Z_{1,N} \\ 
-Z_{2,1} &amp; Z_{2,2}  &amp; \ldots &amp; Z_{2,N}\\ 
-\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\ 
-Z_{r,1} &amp; Z_{r,2}  &amp; \ldots &amp; Z_{r,N}
-\end{array} 
-\right ]
-\label{eq:mc_sample} \tag{4}
-\end{equation}
+<p>$$
+\begin{align*}
+A_s &amp;= 5.12  \;\mathrm{cm^2}      \\
+c_s &amp;= 6.256 \;\mathrm{m/s}       \\
+P_s &amp;= 100   \;\mathrm{mmHg}      \\
+\rho &amp;= 1045 \; \mathrm{kg/m^3}
+\end{align*}
 $$</p>
 
 </div>
@@ -12070,33 +12115,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We may the compute a value of $Y$ from <a href="#eq:linear_model">(1)</a> for each
-column in <a href="#eq:mc_sample">(4)</a> to produce a solution vector
-$\mathbf{Y}$. Having sampled $N$ values from each input factor we may
-produce $r$ scatter plots, by projecting in turn the $N$ values of
-$\mathbf{Y}$ against the $N$ values of each of the $r$ input factors.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:mc_solution"></div><p>$$
-\begin{equation}
-\mathbf{Y} = \left [
-\begin{array}{c}
-y_1 \\ 
-y_2 \\ 
-\vdots \\ 
-y_N
-\end{array}
-\right ]
-\label{eq:mc_solution} \tag{5}
-\end{equation}
-$$</p>
+<p>The two wall models give almost the same result around the reference area and pressure, for which the model was calibrated.</p>
 
 </div>
 </div>
@@ -12106,32 +12125,21 @@ $$</p>
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Generate distributions for each element in z and sample</span>
-    <span class="n">Ns</span> <span class="o">=</span> <span class="mi">500</span>
-    <span class="c1"># jpdf = generate_distributions(zm)</span>
-    
-    <span class="n">pdfs</span> <span class="o">=</span> <span class="p">[]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start deterministic comparison</span>
+<span class="n">pressure_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_mmhg_pa</span>
+<span class="n">a_s</span> <span class="o">=</span> <span class="mf">5.12</span> <span class="o">*</span> <span class="n">unit_cm2_m2</span>
+<span class="n">c_s</span> <span class="o">=</span> <span class="mf">6.25609258389</span>
+<span class="n">p_s</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">unit_mmhg_pa</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">1045.</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">zm</span><span class="p">):</span>
-        <span class="n">pdfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-
-    <span class="n">jpdf</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="o">*</span><span class="n">pdfs</span><span class="p">)</span>
-
-    <span class="c1"># generate Z</span>
-    <span class="n">Z</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
-    <span class="c1"># evaluate the model</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">Z</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
-
-    <span class="c1"># Scatter plots of data for visual inspection of sensitivity</span>
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Y</span><span class="p">[:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-        
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">quadratic_area_model</span><span class="p">,</span> <span class="s1">&#39;Quadratic model&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">logarithmic_area_model</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">)]:</span>
+    <span class="n">y_area</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="p">(</span><span class="n">a_s</span><span class="p">,</span> <span class="n">c_s</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">rho</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">y_area</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Pressure [mmHg]&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Area [cm2]&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12143,10 +12151,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that the assumption of independent factors $Z_i$ allows us to sample
-each $Z_i$ independently from its own marginal distribution. We store
-all the samples for all the factors $Z_i$ in the the numpy array
-<code>Z[i,:]</code>, where $i$ corresponds to $Z_i$ as:</p>
+<h1 id="Uncertainty-Quantification-and-Sensitivity-Analysis">Uncertainty Quantification and Sensitivity Analysis<a class="anchor-link" href="#Uncertainty-Quantification-and-Sensitivity-Analysis">&#182;</a></h1><div id="sec:uqsa"></div><h2 id="Definition-of-uncertain-input-parameters">Definition of uncertain input parameters<a class="anchor-link" href="#Definition-of-uncertain-input-parameters">&#182;</a></h2><p>For each model input, we define a uniform distributed random variable which varies with a deviation of $5\%$ around the deterministic value from above:</p>
 
 </div>
 </div>
@@ -12155,191 +12160,14 @@ all the samples for all the factors $Z_i$ in the the numpy array
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-
-<pre><code>    pdf.append(cp.Normal(z[0],z[1]))
-        Z[i,:]=pdf[i].sample(N)</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>From the scatterplots generated by the python code above we
-intuitively get the impression that $Y$ is more sensitive to $Z_4$
-than to $Z_3$, and that $Y$ is more sensitive to $Z_3$ than to $Z_3$,
-and that we may order the factors my influence on $Y$ as:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:scatter_plot_rank"></div><p>$$
-\begin{equation}
-Z_4 &gt; Z_3 &gt; Z_2 &gt; Z_1 
-\label{eq:scatter_plot_rank} \tag{6}
-\end{equation}
+<p>$$
+\begin{align*}
+A_s &amp;= 5.12  \; \mathrm{cm^2}    \quad Z_0 = \mbox{U}(4.864, 5.376) \\
+c_s &amp;= 6.256 \; \mathrm{m/s}     \quad Z_1 = \mbox{U}(5.943, 6.569) \\
+P_s &amp;= 100   \; \mathrm{mmHg}    \quad Z_2 = \mbox{U}(95.0, 105.0) \\
+\rho &amp;= 1045 \; \mathrm{kg/m^3}  \quad Z_3 = \mbox{U}(992.75, 1097.25) 
+\end{align*}
 $$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Our intuitive notion of influence is based on that there is more shape
-(or better pattern) in the plot for $Z_4$ than for $Z_3$ and likewise.</p>
-<p>For our simple linear model in <a href="#eq:linear_model">(1)</a> we are in the
-fortunate situation that we may compute the local derivatives analyticaly:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Sp"></div><p>$$
-\begin{equation}
-S_{Z_i}^{p} = \frac{\partial Y}{\partial Z_i} = \Omega_i
-\label{eq:Sp} \tag{7}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In our code example we set all the $\Omega_i=2$ for $i=1,\ldots,4$,
-and according to the local sensitivity meansure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> all the input factors $Z_i$s are equally important and
-independent of the variation of each factor. This measure is clearly
-at odds with the ranking of influence based on the scatterplots in
-<a href="#eq:scatter_plot_rank">(6)</a> and is an indication of the usefullness of
-scatterplots in sensititivy analysis. However, the bidimensional
-scatterplots may in some cases be deceiving and lead to type II
-errors (i.e. failure to identify influential parameters). ref to Saltelli 2004...</p>
-<p>Most sensitivity measures aim to preserve the rich information
-provided by the scatterplots in a condensed format. The challenge is
-how to rank the factors rapidly and automatically without having to
-inspect many scatterplots in situations with many input
-factors. Another challenge with scatterplots is that sensitivities for
-sets cannot be visualized, while luckily compact sensitivity measures may be
-defined in such cases.</p>
-<h1 id="Normalized-derivatives">Normalized derivatives<a class="anchor-link" href="#Normalized-derivatives">&#182;</a></h1><p>A simple way to improve the derivative sensitivity measure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> is to scale the input-output variables with their standard deviations:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss"></div><p>$$
-\begin{equation}
-S_{Z_i}^{\sigma} = \frac{\partial Y/\sigma_Y}{\partial Z_i/\sigma_{Z_i}} = \frac{\sigma_{Z_i}}{\sigma_{Y}} \; \frac{\partial Y}{\partial Z_i}
-\label{eq:Ss} \tag{8}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In case of our simple linear model <a href="#eq:linear_model">(1)</a> we get from
-<a href="#eq:Ss">(8)</a>:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss_simple"></div><p>$$
-\begin{equation}
-\left (S_{Z_i}^{\sigma} \right)^2 = \left( \frac{\sigma_{Z_i}}{\sigma_{Y}}\right)^2 \; \left (\frac{\partial Y}{\partial Z_i}\right)^2 = \left( \frac{\sigma_{Z_i}\, \Omega_i}{\sigma_{Y}}\right)^2 \;  \qquad \textsf{which may be rearranged to:} \qquad \sigma_y^2 \, (S_{Z_i}^{\sigma})^2 = \left ( \Omega_{i} \sigma_{Y} \right )^2
-\label{eq:Ss_simple} \tag{9}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Based on the linearity of our model we previously found  <a href="#eq:analytic_mean_std">(3)</a> which also yields:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss_model_ded"></div><p>$$
-\begin{equation}
- \sigma_Y^2 = \sum_{i=1}^{r} \left(\Omega_i^2 \, \sigma_{Z_i}\right)^2
- \label{eq:Ss_model_ded} \tag{10}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As both <a href="#eq:Ss_model_ded">(10)</a> and <a href="#eq:Ss_simple">(9)</a> must hold simultaneously we get</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:Ss1"></div><p>$$
-\begin{equation}
-\left (S_{Z_i}^{\sigma} \right)^2=1 
-\label{eq:Ss1} \tag{11}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The normalized derivative measure of sensitivity in <a href="#eq:Ss">(8)</a> is
-more convincing than <a href="#eq:Sp">(7)</a>: first, as it involves both the
-weights $\Omega_i$ and the factors $Z_i$ in <a href="#eq:linear_model">(1)</a>;
-second as the measures are properly scaled and summarizes to one,
-which allows for an easy interpretation of the output sensitivity with
-respect to each of the input factors.</p>
 
 </div>
 </div>
@@ -12349,13 +12177,21 @@ respect to each of the input factors.</p>
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Theoretical sensitivity indices</span>
-    <span class="n">std_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">w</span> <span class="o">*</span> <span class="n">zm</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">zm</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">std_y</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Theoretical sensitivity indices</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">row_labels</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">Nrv</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;S analytic&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create marginal and joint distributions</span>
+<span class="n">dev</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">a_s</span> <span class="o">=</span> <span class="mf">5.12</span> <span class="o">*</span> <span class="n">unit_cm2_m2</span>
+<span class="n">A_s</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="n">a_s</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dev</span><span class="p">),</span> <span class="n">a_s</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">dev</span><span class="p">))</span>
+
+<span class="n">c_s</span> <span class="o">=</span> <span class="mf">6.25609258389</span>
+<span class="n">C_s</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="n">c_s</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dev</span><span class="p">),</span> <span class="n">c_s</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">dev</span><span class="p">))</span>
+
+<span class="n">p_s</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">unit_mmhg_pa</span>
+<span class="n">P_s</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="n">p_s</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dev</span><span class="p">),</span> <span class="n">p_s</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">dev</span><span class="p">))</span>
+
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">1045.</span>
+<span class="n">Rho</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dev</span><span class="p">),</span> <span class="n">rho</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">dev</span><span class="p">))</span>
+
+<span class="n">jpdf</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">A_s</span><span class="p">,</span> <span class="n">C_s</span><span class="p">,</span> <span class="n">P_s</span><span class="p">,</span> <span class="n">Rho</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12367,12 +12203,7 @@ respect to each of the input factors.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Based on samples of the random input variables and 
-subsequent model evaluations, we may estimate the standard deviation
-of $\mathbf{Y}$ and compute the relative error with respect to the
-theoretical value. You may change the number of sample above,
-i.e. $N$, and see how $N$ influence the estimates.</p>
-
+<h2 id="Scatter-plots-and-Samples">Scatter plots and Samples<a class="anchor-link" href="#Scatter-plots-and-Samples">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12381,11 +12212,33 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1">#  Expectation and variance from sampled values</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expectation and std from sampled values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;std(Y)=</span><span class="si">{:2.3f}</span><span class="s1"> and relative error=</span><span class="si">{:2.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">std_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">std_y</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mean(Y)=</span><span class="si">{:2.3f}</span><span class="s1"> and E(Y)=</span><span class="si">{:2.3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">zm</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">)))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># scatter plots</span>
+<span class="n">pressure_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_mmhg_pa</span>
+<span class="n">Ns</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">sample_scheme</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">sample_scheme</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">quadratic_area_model</span><span class="p">,</span> <span class="s1">&#39;Quadratic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#dd3c30&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">logarithmic_area_model</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#2775b5&#39;</span><span class="p">)]:</span>
+    <span class="c1"># evaluate the model for all samples</span>
+    <span class="n">Y_area</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: evaluations Y_area&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">Y_area</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Pressure [mmHg]&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Area [cm2]&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">3.5</span><span class="p">,</span><span class="mf">7.</span><span class="p">])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: scatter plots&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">Y_area</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Area [cm2]&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">3.45</span><span class="p">,</span> <span class="mf">4.58</span><span class="p">])</span>
+        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12397,24 +12250,7 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that <code>Ns</code> is the size of our Monte Carlo experiment, corresponding
-to the number of times we have evaluated our simple linear model
-<a href="#eq:linear_model">(1)</a>. The evaluation of the model is normally the
-most computationally expensive part of the analysis, and for that
-reasons <code>Ns</code> is referred to as the <code>cost</code> of the analysis.</p>
-<h1 id="Conditional-variances">Conditional variances<a class="anchor-link" href="#Conditional-variances">&#182;</a></h1><p>As noted previously, the importance of a factor $Z_i$ is manifested
-the existence of a <code>shape</code> or <code>pattern</code> in the model outputs
-$Y$. Conversely, a uniform cloud of output points $Y$ as a function of
-$Z_i$ is a symptom, albeit not a proof, indicating that $Z_i$ is a
-noninfluential factor. In this section we seek to demonstrate that
-conditional variances is a usefull means to quantify the <code>shape</code> or
-<code>pattern</code> in the outputs.</p>
-<p>The shape in the outputs $Y$ for a given $Z_i$, may be seen in the
-scatterplot as of $Y$ versus $Z_i$. In particular, we may cut the
-$Z_i$-axis into slices and assess how the distribution of the outputs
-$Y$ changes from slice to slice. This is illustrated in the code
-snippet below, where the slices are identified with vertical dashed
-lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
+<h2 id="Monte-Carlo">Monte Carlo<a class="anchor-link" href="#Monte-Carlo">&#182;</a></h2><p>We apply the Monte Carlo method for both models as discussed before:</p>
 
 </div>
 </div>
@@ -12424,43 +12260,98 @@ lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of data, z-slices, and linear model</span>
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start Monte Carlo</span>
+<span class="n">pressure_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_mmhg_pa</span>
+<span class="n">Ns</span> <span class="o">=</span> <span class="mi">50000</span>
+<span class="n">sample_method</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<span class="n">number_of_parameters</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)</span>
 
-    <span class="n">Ndz</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Number of slices of the Z-axes</span>
+<span class="c1"># 1. Generate sample matrices</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">generate_sample_matrices_mc</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">number_of_parameters</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">sample_method</span><span class="p">)</span>
 
-    <span class="n">Zslice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">))</span>  <span class="c1"># array for mean-values in the slices</span>
-    <span class="n">ZBndry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># array for boundaries of the slices</span>
-    <span class="n">dz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Nrv</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="n">zmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="n">zmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>  <span class="c1"># each Z[k,:] may have different extremas</span>
-        <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">zmax</span> <span class="o">-</span> <span class="n">zmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">Ndz</span>
-
-        <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">Ndz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># slice Zk into Ndz slices</span>
-        <span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span> <span class="o">+</span> <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">-</span> <span class="n">dz</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">)</span> <span class="c1"># Midpoint in the slice</span>
-
-        <span class="c1"># Plot the the vertical slices with axvline</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndz</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;.75&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Plot the data</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Y</span><span class="p">[:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
-
-        <span class="n">Ymodel</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Produce the straight line</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">Ymodel</span><span class="p">)</span>
-
-        <span class="n">ymin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">);</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
+<span class="n">fig_mean</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">ax_mean</span> <span class="o">=</span> <span class="n">fig_mean</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Quadratic model&#39;</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">]</span> <span class="p">:</span>
+    <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">ax_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span> <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Uncertainty measures (averaged)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  E(Y)  |  Std(Y) </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">quadratic_area_model</span><span class="p">,</span> <span class="s1">&#39;Quadratic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#dd3c30&#39;</span><span class="p">),</span>
+                           <span class="p">(</span><span class="n">logarithmic_area_model</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#2775b5&#39;</span><span class="p">)]:</span>
+    <span class="c1"># evaluate the model for all samples</span>
+    <span class="n">Y_A</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Y_B</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">Y_C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">),</span> <span class="n">Ns</span><span class="p">,</span> <span class="n">number_of_parameters</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_parameters</span><span class="p">):</span>
+        <span class="n">Y_C</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c1"># calculate statistics</span>
+    <span class="n">plotMeanConfidenceAlpha</span> <span class="o">=</span> <span class="mf">5.</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">])</span>
+    <span class="n">expected_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">prediction_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="n">plotMeanConfidenceAlpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">100.</span> <span class="o">-</span> <span class="n">plotMeanConfidenceAlpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.5f}</span><span class="s1"> | </span><span class="si">{:2.5f}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">expected_value</span><span class="p">)</span><span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">std</span><span class="p">)</span><span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+    <span class="c1"># 3. Approximate the sensitivity indices</span>
+    <span class="c1"># Better to centralize data before calculating sensitivities</span>
+    <span class="n">expected_value_col</span> <span class="o">=</span> <span class="n">expected_value</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">expected_value_col</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">expected_value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">Y_Ac</span> <span class="o">=</span> <span class="n">Y_A</span> <span class="o">-</span> <span class="n">expected_value_col</span>
+    <span class="n">Y_Bc</span> <span class="o">=</span> <span class="n">Y_B</span>  <span class="o">-</span> <span class="n">expected_value_col</span>
+    <span class="n">Y_Cc</span> <span class="o">=</span> <span class="n">Y_C</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">-</span> <span class="n">expected_value</span>
+    <span class="n">Y_Cc</span> <span class="o">=</span> <span class="n">Y_Cc</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">S</span><span class="p">,</span> <span class="n">ST</span> <span class="o">=</span> <span class="n">calculate_sensitivity_indices_mc</span><span class="p">(</span><span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">)</span>
+    <span class="n">Sc</span><span class="p">,</span> <span class="n">STc</span> <span class="o">=</span> <span class="n">calculate_sensitivity_indices_mc</span><span class="p">(</span><span class="n">Y_Ac</span><span class="p">,</span> <span class="n">Y_Bc</span><span class="p">,</span> <span class="n">Y_Cc</span><span class="p">)</span>
+
+    <span class="c1">## Plots</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">fig_mean</span>
+    <span class="n">ax_mean</span> <span class="o">=</span> <span class="n">ax_mean</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">expected_value</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">prediction_interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span>
+                     <span class="n">prediction_interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Pressure [mmHg]&#39;</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Area [cm2]&#39;</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">ax_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: sensitvity indices&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">colorsPie</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;yellowgreen&#39;</span><span class="p">,</span> <span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="s1">&#39;lightskyblue&#39;</span><span class="p">,</span> <span class="s1">&#39;lightcoral&#39;</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">,</span> <span class="s1">&#39;wave speed&#39;</span><span class="p">,</span> <span class="s1">&#39;pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># the x locations for the groups</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mf">0.35</span>  <span class="c1"># the width of the bars</span>
+
+    <span class="c1">#firstOrderIndicesTimeAverage = S[:, 50]</span>
+    <span class="c1">#totalIndicesTimeAverage = ST[:, 50]</span>
+    <span class="c1">#rects1 = plt.bar(ind, firstOrderIndicesTimeAverage, width, color=colorsPie, alpha=0.5)</span>
+    <span class="c1">#rects2 = plt.bar(ind + width, totalIndicesTimeAverage, width, color=colorsPie, hatch=&#39;.&#39;)</span>
+
+    <span class="n">firstOrderIndicesTimeAverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">S</span><span class="o">*</span><span class="n">variance</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span>
+    <span class="n">totalIndicesTimeAverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ST</span><span class="o">*</span><span class="n">variance</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span>
+    <span class="n">rects1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">firstOrderIndicesTimeAverage</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colorsPie</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">rects2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">totalIndicesTimeAverage</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colorsPie</span><span class="p">,</span> <span class="n">hatch</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># add some text for labels, title and axes ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="n">width</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="n">width</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12472,104 +12363,7 @@ lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note, that average value of $Y$ in a very thin slice, corresponds to
-keeping $Z_i$ fixed while averaging over all output values of $Y$ due
-to all-but $Z_i$, which corresponds to the conditional expected value:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-E_{Z_{\sim i}} (Y\;|\;Z_i) 
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>For convenience we let $Z_{\sim i}$ denote <code>all-but</code> $Z_i$. Naturally,
-a measure of how much $E_{Z_{\sim i}} (Y\;|\;Z_i)$ varies in the range
-of $Z_i$ is given by the conditional variance:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Further, the variance the output $Y$ may be decomposed into:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="eq:VarDecomp"></div><p>$$
-\begin{equation}
-\text{V}(Y) = E_{Z_i} ( V_{Z_{\sim i}} (Y \; | Z_{i})) + \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
-\label{eq:VarDecomp} \tag{12}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>A large $\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))$ will imply that
-$Z_i$ is an important factor and is therefore coined the first-order
-effect of $Z_i$ on $Y$, and its fraction of the total variation of $Y$ is expressed by $S_i$, <code>the first-order sensitivity index</code> of $Z_i$ on $Y$:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
-\begin{equation}
-S_i = \frac{\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))}{\text{V}(Y)}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>By <a href="#eq:VarDecomp">(12)</a>, $S_i$ is number always in the range $[0,1]$,
-and a high value implies an important factor.</p>
+<h2 id="Polynomial-chaos">Polynomial chaos<a class="anchor-link" href="#Polynomial-chaos">&#182;</a></h2><p>We apply the Polynomial Chaos method for both models as discussed before:</p>
 
 </div>
 </div>
@@ -12579,217 +12373,89 @@ and a high value implies an important factor.</p>
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of averaged y-values per slice, with averaged data</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start polynomial chaos</span>
+<span class="c1"># orthogonal C_polynomial from marginals</span>
+<span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">Ns</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">cp</span><span class="o">.</span><span class="n">bertran</span><span class="o">.</span><span class="n">terms</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">))</span>
 
-    <span class="n">Zsorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-    <span class="n">Ysorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-    <span class="n">YsliceMean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nrv</span><span class="p">,</span> <span class="n">Ndz</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Uncertainty measures (averaged)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  E(Y)  |  Std(Y) </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nrv</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># sort values for Zk, </span>
-        <span class="n">sidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span> <span class="c1">#sidx holds the indexes for the sorted values of Zk</span>
-        <span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">sidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">Ysorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">sidx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Ysorted is Y for the sorted Zk</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndz</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;.75&#39;</span><span class="p">)</span>
-
-            <span class="c1"># find indexes of z-values in the current slice</span>
-            <span class="n">zidx_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">Zsorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">ZBndry</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">zidx_range</span><span class="p">):</span>  <span class="c1"># check if range has elements</span>
-                <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Ysorted</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">zidx_range</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># set value to None if noe elements in z-slice</span>
-                <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        
-        
-
-        <span class="c1"># # Plot linear model</span>
-        <span class="n">Nmodel</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">zmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="n">zmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Zslice</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:])</span>
-
-        <span class="n">zvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">Nmodel</span><span class="p">)</span>
-        <span class="c1">#linear_model</span>
-        <span class="n">Ymodel</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">zvals</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">zvals</span><span class="p">,</span> <span class="n">Ymodel</span><span class="p">)</span>
-
-        <span class="n">xlbl</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlbl</span><span class="p">)</span>
-
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+<span class="n">ax_mean</span> <span class="o">=</span> <span class="n">fig_mean</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Quadratic model&#39;</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">]</span> <span class="p">:</span>
+    <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">ax_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span> <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
     
-    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>  <span class="c1"># adjust subplot(s) to the figure area.</span>
-    
-    <span class="n">SpoorMan</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">YsliceMean</span><span class="p">[</span><span class="n">k</span><span class="p">,:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>   
-    <span class="nb">print</span><span class="p">(</span><span class="n">SpoorMan</span><span class="p">)</span>
-</pre></div>
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">quadratic_area_model</span><span class="p">,</span> <span class="s1">&#39;Quadratic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#dd3c30&#39;</span><span class="p">),</span>
+                           <span class="p">(</span><span class="n">logarithmic_area_model</span><span class="p">,</span> <span class="s1">&#39;Logarithmic model&#39;</span><span class="p">,</span> <span class="s1">&#39;#2775b5&#39;</span><span class="p">)]:</span>
+    <span class="n">sample_scheme</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+    <span class="c1"># create samples</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">sample_scheme</span><span class="p">)</span>
+    <span class="c1"># create orthogonal polynomials</span>
+    <span class="n">orthogonal_polynomials</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+    <span class="c1"># evaluate the model for all samples</span>
+    <span class="n">Y_area</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">pressure_range</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+    <span class="c1"># polynomial chaos expansion</span>
+    <span class="n">polynomial_expansion</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">orthogonal_polynomials</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">Y_area</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-</div>
-</div>
-</div>
+    <span class="c1"># calculate statistics</span>
+    <span class="n">plotMeanConfidenceAlpha</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">expected_value</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+    <span class="n">standard_deviation</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Std</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+    <span class="n">prediction_interval</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Perc</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span>
+                                  <span class="p">[</span><span class="n">plotMeanConfidenceAlpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">plotMeanConfidenceAlpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">],</span>
+                                  <span class="n">jpdf</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:2.5f}</span><span class="s1"> | </span><span class="si">{:2.5f}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">expected_value</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">std</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="How-to-compute-the-sensitivity-indices">How to compute the sensitivity indices<a class="anchor-link" href="#How-to-compute-the-sensitivity-indices">&#182;</a></h1><p>Below we will demostrate how the Sobol sensitivity indices may be
-computed with two approaches; the Monte Carlo method and the
-polynomial chaos expansion method.</p>
-<h3 id="Monte-Carlo">Monte Carlo<a class="anchor-link" href="#Monte-Carlo">&#182;</a></h3><p>Below some code snippets are provided to illustrate how we may compute
-the Soboil indices with the MCM. For the interested reader we have also
-writen a seperate and more detailed notebook <a href="monte_carlo.ipynb">A brief introduction to
-UQ and SA with the Monte Carlo method</a>.</p>
+    <span class="c1"># compute sensitivity indices</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+    <span class="n">ST</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_t</span><span class="p">(</span><span class="n">polynomial_expansion</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate sens indices of non additive model</span>
-<span class="k">def</span> <span class="nf">mc_sensitivity_linear</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">sample_method</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">fig_mean</span>
+    <span class="n">ax_mean</span> <span class="o">=</span>  <span class="n">ax_mean</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">expected_value</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">pressure_range</span> <span class="o">*</span> <span class="n">unit_pa_mmhg</span><span class="p">,</span> <span class="n">prediction_interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span>
+                     <span class="n">prediction_interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit_m2_cm2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Pressure [mmHg]&#39;</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Area [cm2]&#39;</span><span class="p">)</span>
+    <span class="n">ax_mean</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
-    <span class="n">Nrv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">jpdf</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">figs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">ax_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: sensitvity indices&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">colorsPie</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;yellowgreen&#39;</span><span class="p">,</span> <span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="s1">&#39;lightskyblue&#39;</span><span class="p">,</span> <span class="s1">&#39;lightcoral&#39;</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">,</span> <span class="s1">&#39;wave speed&#39;</span><span class="p">,</span> <span class="s1">&#39;pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># the x locations for the groups</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mf">0.35</span>  <span class="c1"># the width of the bars</span>
 
-    <span class="c1"># 1. Generate sample matrices</span>
-    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">generate_sample_matrices_mc</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">Nrv</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">sample_method</span><span class="p">)</span>
+    <span class="c1">#firstOrderIndicesTimeAverage = S[:, 50]</span>
+    <span class="c1">#totalIndicesTimeAverage = ST[:, 50]</span>
+    <span class="c1">#rects1 = plt.bar(ind, firstOrderIndicesTimeAverage, width, color=colorsPie, alpha=0.5)</span>
+    <span class="c1">#rects2 = plt.bar(ind + width, totalIndicesTimeAverage, width, color=colorsPie, hatch=&#39;.&#39;)</span>
 
-    <span class="c1"># 2. Evaluate the model</span>
-    <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span> <span class="o">=</span> <span class="n">evaluate_linear_model</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">firstOrderIndicesTimeAverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">S</span><span class="o">*</span><span class="n">variance</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span>
+    <span class="n">totalIndicesTimeAverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ST</span><span class="o">*</span><span class="n">variance</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">variance</span><span class="p">)</span>
+    <span class="n">rects1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">firstOrderIndicesTimeAverage</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colorsPie</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">rects2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">totalIndicesTimeAverage</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colorsPie</span><span class="p">,</span> <span class="n">hatch</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># 3. Approximate the sensitivity indices</span>
-    <span class="n">S</span><span class="p">,</span> <span class="n">ST</span> <span class="o">=</span> <span class="n">calculate_sensitivity_indices_mc</span><span class="p">(</span><span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">)</span>
+    <span class="c1"># add some text for labels, title and axes ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="n">width</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="n">width</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">ST</span>
-<span class="c1"># end calculate sens indices of non additive model</span>
-
-
-<span class="c1"># model evaluation</span>
-<span class="k">def</span> <span class="nf">evaluate_linear_model</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-
-    <span class="n">number_of_parameters</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">number_of_sampless</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># 1. evaluate sample matrices A</span>
-    <span class="n">Y_A</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
-
-    <span class="c1"># 2. evaluate sample matrices B</span>
-    <span class="n">Y_B</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
-
-    <span class="c1"># 3. evaluate sample matrices C</span>
-    <span class="n">Y_C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">number_of_sampless</span><span class="p">,</span> <span class="n">number_of_parameters</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_parameters</span><span class="p">):</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="n">Y_C</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Monte Carlo</span>
-    <span class="c1"># get joint distributions</span>
-    <span class="n">jpdf</span> <span class="o">=</span> <span class="n">generate_distributions</span><span class="p">(</span><span class="n">zm</span><span class="p">)</span>
-
-    <span class="n">Ns_mc</span> <span class="o">=</span> <span class="mi">1000000</span>
-    <span class="c1"># calculate sensitivity indices</span>
-    <span class="n">A_s</span><span class="p">,</span> <span class="n">B_s</span><span class="p">,</span> <span class="n">C_s</span><span class="p">,</span> <span class="n">f_A</span><span class="p">,</span> <span class="n">f_B</span><span class="p">,</span> <span class="n">f_C</span><span class="p">,</span> <span class="n">S_mc</span><span class="p">,</span> <span class="n">ST_mc</span> <span class="o">=</span> <span class="n">mc_sensitivity_linear</span><span class="p">(</span><span class="n">Ns_mc</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-
-    <span class="n">Sensitivities</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">S_mc</span><span class="p">,</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">row_labels</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">Nrv</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First Order Indices&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sensitivities</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Smc&#39;</span><span class="p">,</span><span class="s1">&#39;Sa&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Polynomial-chaos-expansion">Polynomial chaos expansion<a class="anchor-link" href="#Polynomial-chaos-expansion">&#182;</a></h3><p>As for the MCM some code snippets are provided to illustrate how we may compute
-the Soboil indices with the polynomial chaos expansions using <code>chaospy</code>. A more in dept treatment of <code>chaospy</code> and its usage is provided in the separate notebook <a href="introduction_gpc.ipynb">A practical introduction to polynomial chaos with the chaospy package</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos computations</span>
-    <span class="n">Ns_pc</span> <span class="o">=</span> <span class="mi">80</span>
-    <span class="n">samples_pc</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Ns_pc</span><span class="p">)</span>
-    <span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="n">Y_pc</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">samples_pc</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">approx</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">samples_pc</span><span class="p">,</span> <span class="n">Y_pc</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-
-    <span class="n">exp_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="n">std_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Std</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Statistics polynomial chaos</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        E(Y)  |  std(Y) </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;pc  : </span><span class="si">{:2.5f}</span><span class="s1"> | </span><span class="si">{:2.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exp_pc</span><span class="p">),</span> <span class="n">std_pc</span><span class="p">))</span>
-    
-    
-    <span class="n">S_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-
-    <span class="n">Sensitivities</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">S_mc</span><span class="p">,</span><span class="n">S_pc</span><span class="p">,</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First Order Indices&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sensitivities</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Smc&#39;</span><span class="p">,</span><span class="s1">&#39;Spc&#39;</span><span class="p">,</span><span class="s1">&#39;Sa&#39;</span><span class="p">],</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-
-<span class="c1">#     print(&quot;\nRelative errors&quot;)</span>
-<span class="c1">#     rel_errors=np.column_stack(((S_mc - s**2)/s**2,(S_pc - s**2)/s**2))</span>
-<span class="c1">#     print(pd.DataFrame(rel_errors,columns=[&#39;Error Smc&#39;,&#39;Error Spc&#39;],index=row_labels).round(3))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos convergence</span>
-    <span class="n">Npc_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Npc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Npc_list</span><span class="p">):</span>
-        <span class="n">Zpc</span> <span class="o">=</span> <span class="n">jpdf</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Npc</span><span class="p">)</span>
-        <span class="n">Ypc</span> <span class="o">=</span> <span class="n">linear_model</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">Zpc</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="n">Npol</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_chol</span><span class="p">(</span><span class="n">Npol</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-        <span class="n">approx</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">Zpc</span><span class="p">,</span> <span class="n">Ypc</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-        <span class="n">s_pc</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">approx</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
-        <span class="n">error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LA</span><span class="o">.</span><span class="n">norm</span><span class="p">((</span><span class="n">s_pc</span> <span class="o">-</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">Npc_list</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
-    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Nr Z&#39;</span><span class="p">)</span>
-    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;L2-norm of error in Sobol indices&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12802,10 +12468,33 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="References">References<a class="anchor-link" href="#References">&#182;</a></h1><ol>
-<li><div id="saltelli_global_2008"></div> <strong>A. (Andrea) Saltelli</strong>. 
-<em>Global Sensitivity Analysis : the Primer</em>,
-John Wiley,
-2008.</li>
+<li><p><div id="eck2015stochastic"></div> <strong>V. G. Eck, J. Feinberg, H. P. Langtangen and L. R. Hellevik</strong>. 
+Stochastic Sensitivity Analysis for Timing and Amplitude of Pressure waves in the Arterial System,
+<em>International Journal for Numerical Methods in Biomedical Engineering</em>,
+31(4),
+2015.</p>
+</li>
+<li><p><div id="boileau_benchmark_2015"></div> <strong>E. Boileau, P. Nithiarasu, P. J. Blanco, L. O. Mueller, F. E. Fossan, L. R. Hellevik, W. P. Donders, W. Huberts, M. Willemet and J. Alastruey</strong>. 
+A benchmark study of numerical schemes for one-dimensional arterial blood flow modelling,
+<em>International Journal for Numerical Methods in Biomedical Engineering</em>,
+31(10),
+pp. n/a-n/a,
+2015.</p>
+</li>
+<li><p><div id="sherwin2003"></div> <strong>S. Sherwin, V. Franke, J. Peir\'o and K. Parker</strong>. 
+One-Dimensional Modelling of Vascular Network in Space-Time Variables,
+<em>Journal of Engineering Mathematics</em>,
+47(3-4),
+pp. 217-233,
+2003.</p>
+</li>
+<li><p><div id="Hayashi1980"></div> <strong>K. Hayashi, H. Handa, S. Nagasawa, A. Okumura and K. Moritake</strong>. 
+Stiffness and Elastic Behavior of Human Intracranial and Extracranial arteries,
+<em>Journal of Biomechanics</em>,
+13(2),
+pp. 175-184,
+1980.</p>
+</li>
 </ol>
 
 </div>
