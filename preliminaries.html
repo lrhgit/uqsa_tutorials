@@ -11774,136 +11774,6 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- dom:TITLE: Some useful statistical relations and derivations  --></p>
-<h1 id="Some-useful-statistical-relations-and-derivations">Some useful statistical relations and derivations<a class="anchor-link" href="#Some-useful-statistical-relations-and-derivations">&#182;</a></h1><h2 id="Short-list-of-formulas">Short list of formulas<a class="anchor-link" href="#Short-list-of-formulas">&#182;</a></h2><p>In the formulas listed below $X$, $X_1$, and $X_2$ denote
-<em>independent</em>, random variables, while $a$ denotes a scalar. Further,
-$Y$ is also a random variable possibly dependent on $X$.</p>
-<p>Expectation:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto1"></div><p>$$
-\begin{equation}
-E(aX) = a \, E(X)
-\label{_auto1} \tag{1}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Adam's law of total expectation:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto2"></div><p>$$
-\begin{equation}
-E[Y] = E[E[Y\; | \,X]]
-\label{_auto2} \tag{2}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Variance:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto3"></div><p>$$
-\begin{equation}
-V(X) = E(X^2) - E(X)^2
-\label{_auto3} \tag{3}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto4"></div><p>$$
-\begin{equation}
-V(X_1+X_2) = V(X_1) + V(X_2) 
-\label{_auto4} \tag{4}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto5"></div><p>$$
-\begin{equation}
-V(X_1 X_2) = V(X_1) V(X_2) + E(X_1)^2 V(X_2) + E(X_2)^2 V(X_1)
-\label{_auto5} \tag{5}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Eve's Law/Law of total variance:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><!-- Equation labels as ordinary links --></p>
-<div id="_auto6"></div><p>$$
-\begin{equation}
-V(Y) = E_X (V(Y|X)) + V_X (E(Y|X))
-\label{_auto6} \tag{6}
-\end{equation}
-$$</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
@@ -11919,41 +11789,19 @@ $$</p>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/leifh/anaconda3/envs/py35/lib/python3.5/site-packages/matplotlib/font_manager.py:280: UserWarning: Matplotlib is building the font cache using fc-list. This may take a moment.
-  &#39;Matplotlib is building the font cache using fc-list. &#39;
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="c1"># plot configuration</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plot configuration</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
 <span class="c1"># import seaborn as sns # sets another style</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
-
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">)</span>
 
 <span class="c1"># font = {&#39;family&#39; : &#39;sans-serif&#39;,</span>
@@ -11990,7 +11838,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Recap-of-basic-statistics">Recap of basic statistics<a class="anchor-link" href="#Recap-of-basic-statistics">&#182;</a></h2><p>Inspired by <a href="https://www.stat.auckland.ac.nz/~fewster/325/notes/ch3.pdf">Rachel Fewster's presentation</a></p>
+<h1 id="Conditional-variance-as-a-means-to-quantify-uncertainty-and-sensitivity">Conditional variance as a means to quantify uncertainty and sensitivity<a class="anchor-link" href="#Conditional-variance-as-a-means-to-quantify-uncertainty-and-sensitivity">&#182;</a></h1><h2 id="Recap-of-basic-statistics">Recap of basic statistics<a class="anchor-link" href="#Recap-of-basic-statistics">&#182;</a></h2><p>Inspired by <a href="https://www.stat.auckland.ac.nz/~fewster/325/notes/ch3.pdf">Rachel Fewster's presentation</a></p>
 <h3 id="Expectation">Expectation<a class="anchor-link" href="#Expectation">&#182;</a></h3><p>The mean, expected value, or expectation of a random variable $X$ is
 written $E(X)$ or sometimes $\mu_X$. When it is assumed to be clear
 from the context which random varialbe it pertains to, the supscript
@@ -12010,7 +11858,7 @@ values of $N$ .</p>
 <div id="eq:definition"></div><p>$$
 \begin{equation}
 E(X) \equiv \mu = {\int\limits}_{x_{\text{min}}}^{x_{\text{max}}} x \; p(x) \, dx 
-\label{eq:definition} \tag{7}
+\label{eq:definition} \tag{1}
 \end{equation}
 $$</p>
 
@@ -12029,7 +11877,7 @@ variables may be declared by means of ready made functions like
 <code>Normal, Exponential</code>,etc. A corresponding probability density
 function may declared with the <code>density</code> function. The expectation
 $E(X) = \mu$ may then be computed analyticaly by following the
-definition in (<a href="#eq:definition">eq:definition</a>):</p>
+definition in (<a href="#eq:definition">1</a>):</p>
 <!-- In the case in which $X$ have a "normal distribution": -->
 <!-- "https://en.wikipedia.org/wiki/Normal_distribution", the expectation -->
 <!-- may be computed analytically (with sympy) with the following snippet: -->
@@ -12081,7 +11929,7 @@ of the random variable $X$ varies around the mean $E(X)$:</p>
 <div id="eq:var_def"></div><p>$$
 \begin{equation}
 V(X) \equiv \sigma_X^2 =  E \left [\left ( X - E(X) \right )^2 \right ] 
-\label{eq:var_def} \tag{8}
+\label{eq:var_def} \tag{2}
 \end{equation}
 $$</p>
 
@@ -12092,7 +11940,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The variance for our random variable <code>Z</code> in the code snippet above may also computed from the definition in (<a href="#eq:var_def">eq:var_def</a>):</p>
+<p>The variance for our random variable <code>Z</code> in the code snippet above may also computed from the definition in (<a href="#eq:var_def">2</a>):</p>
 
 </div>
 </div>
@@ -12118,7 +11966,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A common way of denoting the variance of $X$ is also
 $V(X)=\sigma_X^2$.  For later use we observe that from
-(<a href="#eq:var_def">eq:var_def</a>) we may deduce the commonly used relations:</p>
+(<a href="#eq:var_def">2</a>) we may deduce the commonly used relations:</p>
 
 </div>
 </div>
@@ -12131,7 +11979,7 @@ $V(X)=\sigma_X^2$.  For later use we observe that from
 <div id="eq:Vx"></div><p>$$
 \begin{equation}
 V(X) = E \left [\left ( X - E(X) \right )^2 \right ] = E[X^2] -2 \; E\left[X\, E[X] \right ] + E^2[X]= E[X^2] -  E^2[X]
-\label{eq:Vx} \tag{9}
+\label{eq:Vx} \tag{3}
 \end{equation}
 $$</p>
 
@@ -12155,7 +12003,7 @@ $$</p>
 <div id="eq:Exsq"></div><p>$$
 \begin{equation}
  E[X^2] = V(X) +  E^2[X]
-\label{eq:Exsq} \tag{10}
+\label{eq:Exsq} \tag{4}
 \end{equation}
 $$</p>
 
@@ -12190,7 +12038,7 @@ represented as:</p>
 <div id="eq:jpdf"></div><p>$$
 \begin{equation}
 p(x_1,x_2) = p(x_1) \, p(x_2)
-\label{eq:jpdf} \tag{11}
+\label{eq:jpdf} \tag{5}
 \end{equation}
 $$</p>
 
@@ -12249,7 +12097,7 @@ given $X=x$:</p>
 <div id="eq:cond_pdf"></div><p>$$
 \begin{equation}
 p(Y\; | \,X=x) = \frac{p(X,Y)}{p(X)}
-\label{eq:cond_pdf} \tag{12}
+\label{eq:cond_pdf} \tag{6}
 \end{equation}
 $$</p>
 
@@ -12277,7 +12125,7 @@ given $X=x$ may be simplified to:</p>
 <div id="eq:cond_pdf_simple"></div><p>$$
 \begin{equation}
 p(Y\; | \,X=x) = p(Y)
-\label{eq:cond_pdf_simple} \tag{13}
+\label{eq:cond_pdf_simple} \tag{7}
 \end{equation}
 $$</p>
 
@@ -12291,7 +12139,7 @@ $$</p>
 <p><strong>Conditional expectation:</strong></p>
 <p>Once the conditional pdfs has been introduced, the conditional
 expectation $E(Y\; | \,X=x)$ has natural formulation following from the
-definition in (<a href="#eq:definition">eq:definition</a>):</p>
+definition in (<a href="#eq:definition">1</a>):</p>
 
 </div>
 </div>
@@ -12304,7 +12152,7 @@ definition in (<a href="#eq:definition">eq:definition</a>):</p>
 <div id="eq:conditionalE"></div><p>$$
 \begin{equation}
 E(Y\; | \,X=x) = {\int\limits}_{y_{\text{min}}}^{y_{\text{max}}} y \; p(y\; | \,X=x) \, dy = f(x)
-\label{eq:conditionalE} \tag{14}
+\label{eq:conditionalE} \tag{8}
 \end{equation}
 $$</p>
 
@@ -12401,7 +12249,7 @@ and proof):</p>
 <div id="eq:Adam"></div><p>$$
 \begin{equation}
 E[Y] = E[E[Y\; | \,X]]
-\label{eq:Adam} \tag{15}
+\label{eq:Adam} \tag{9}
 \end{equation}
 $$</p>
 
@@ -12426,7 +12274,7 @@ $$</p>
 <div id="eq:Adam_explained"></div><p>$$
 \begin{equation}
 E[Y] = E_X \, [E_{Y|X}[Y\; | \,X]]
-\label{eq:Adam_explained} \tag{16}
+\label{eq:Adam_explained} \tag{10}
 \end{equation}
 $$</p>
 
@@ -12450,7 +12298,7 @@ $$</p>
 <div id="eq:Adam_proof"></div><p>$$
 \begin{equation}
 E[Y] = \int_x  E[Y\; | \,X] \; p(x) dx = \int_x  \int_y y \; p(y \,| X=x) \; dy \; p(x) dx = \int_x  \int_y y \, p(x,y)  \; dy \, dx =  \int_y y \, p(y)  \; dy 
-\label{eq:Adam_proof} \tag{17}
+\label{eq:Adam_proof} \tag{11}
 \end{equation}
 $$</p>
 
@@ -12477,7 +12325,7 @@ refer to as the <em>law of total variance</em> may be represented as:</p>
 <div id="eq:Eve"></div><p>$$
 \begin{equation}
 V(Y) = V(E(Y\; | \,X)) + E(V(Y\; | \,X)) 
-\label{eq:Eve} \tag{18}
+\label{eq:Eve} \tag{12}
 \end{equation}
 $$</p>
 
@@ -12488,7 +12336,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generalizations-to-a-computational-model-with-$k$-uncorrelated-parameters">Generalizations to a computational model with $k$ uncorrelated parameters<a class="anchor-link" href="#Generalizations-to-a-computational-model-with-$k$-uncorrelated-parameters">&#182;</a></h2><p>We consider a mathematical/computational model $f$ which produces an output $y$ as a function of $k$ uncorrelated parameters $x_1, x_2, \ldots, x_k$:</p>
+<h1 id="Generalizations-to-a-computational-model-with-$k$-uncorrelated-parameters">Generalizations to a computational model with $k$ uncorrelated parameters<a class="anchor-link" href="#Generalizations-to-a-computational-model-with-$k$-uncorrelated-parameters">&#182;</a></h1><p>We consider a mathematical/computational model $f$ which produces an output $y$ as a function of $k$ uncorrelated parameters $x_1, x_2, \ldots, x_k$:</p>
 
 </div>
 </div>
@@ -12501,7 +12349,7 @@ $$</p>
 <div id="eq:model"></div><p>$$
 \begin{equation}
  y = f(x_1, x_2, \ldots, x_k)
-\label{eq:model} \tag{19}
+\label{eq:model} \tag{13}
 \end{equation}
 $$</p>
 
@@ -12586,7 +12434,7 @@ $$</p>
 <p><!-- Equation labels as ordinary links --></p>
 <div id="eq:VarDef"></div><p>$$
 \begin{equation} 
-  = \idotsint f(x_1, x_2, \ldots, x_k)^2\; \prod_{i=1}^k p_i(x_i)\, \; \mbox{dx}_i -E^2(y) \label{eq:VarDef} \tag{20}
+  = \idotsint f(x_1, x_2, \ldots, x_k)^2\; \prod_{i=1}^k p_i(x_i)\, \; \mbox{dx}_i -E^2(y) \label{eq:VarDef} \tag{14}
 \end{equation}
 $$</p>
 
@@ -12597,7 +12445,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>where the latter equivalence may be deduced following the same lines of deduction as for (<a href="#eq:Vx">eq:Vx</a>).</p>
+<p>where the latter equivalence may be deduced following the same lines of deduction as for (<a href="#eq:Vx">3</a>).</p>
 
 </div>
 </div>
@@ -12624,7 +12472,7 @@ $$</p>
 <p><!-- Equation labels as ordinary links --></p>
 <div id="eq:EVarCondz"></div><p>$$
 \begin{equation}
-E\left ( V(y\; | \,x_j = \tilde{x}_j) \right )  = \idotsint f(x_1, x_2, \ldots, \tilde{x}_j, x_k)^2\; \prod_{i=1}^k p_i(x_i)\, \; \mbox{dx}_i -\int E^2(y\; | \,x_j = \tilde{x}_j) \; p_j(\tilde{x}_j) \; d \tilde{x}_j \label{eq:EVarCondz} \tag{21}
+E\left ( V(y\; | \,x_j = \tilde{x}_j) \right )  = \idotsint f(x_1, x_2, \ldots, \tilde{x}_j, x_k)^2\; \prod_{i=1}^k p_i(x_i)\, \; \mbox{dx}_i -\int E^2(y\; | \,x_j = \tilde{x}_j) \; p_j(\tilde{x}_j) \; d \tilde{x}_j \label{eq:EVarCondz} \tag{15}
 \end{equation}
 $$</p>
 
@@ -12649,7 +12497,7 @@ $$</p>
 <div id="eq:VarCond"></div><p>$$
 \begin{equation}
 V\left ( E(y\; | \,x_j ) \right ) = V(y) - E\left ( V(y\; | \,x_j ) \right ) 
-\label{eq:VarCond} \tag{22}
+\label{eq:VarCond} \tag{16}
 \end{equation}
 $$</p>
 
@@ -12660,8 +12508,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By subtraction of (<a href="#eq:EVarCondz">eq:EVarCondz</a>) from (<a href="#eq:VarDef">eq:VarDef</a>) we realize
-from (<a href="#eq:VarCond">eq:VarCond</a>) that <code>Eve's Law</code> also may be represented:</p>
+<p>By subtraction of (<a href="#eq:EVarCondz">15</a>) from (<a href="#eq:VarDef">14</a>) we realize
+from (<a href="#eq:VarCond">16</a>) that <code>Eve's Law</code> also may be represented:</p>
 
 </div>
 </div>
@@ -12674,7 +12522,7 @@ from (<a href="#eq:VarCond">eq:VarCond</a>) that <code>Eve's Law</code> also may
 <div id="eq:VarCondII"></div><p>$$
 \begin{equation}
 V \left ( E(y\; | \,x_j ) \right ) = \int E^2(y\; | \,x_j = \tilde{x}_j) \; p_j(\tilde{x}_j) \; d \tilde{x}_j  -E^2(y)
-\label{eq:VarCondII} \tag{23}
+\label{eq:VarCondII} \tag{17}
 \end{equation}
 $$</p>
 

@@ -11779,7 +11779,13 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- dom:TITLE: A brief introduction to UQ and SA with the Monte Carlo method --></p>
-<h1 id="A-brief-introduction-to-UQ-and-SA-with-the-Monte-Carlo-method">A brief introduction to UQ and SA with the Monte Carlo method<a class="anchor-link" href="#A-brief-introduction-to-UQ-and-SA-with-the-Monte-Carlo-method">&#182;</a></h1>
+<h1 id="A-brief-introduction-to-UQ-and-SA-with-the-Monte-Carlo-method">A brief introduction to UQ and SA with the Monte Carlo method<a class="anchor-link" href="#A-brief-introduction-to-UQ-and-SA-with-the-Monte-Carlo-method">&#182;</a></h1><p><!-- dom:AUTHOR: Vinzenz Gregor Eck at Expert Analytics -->
+<!-- Author: --><br>
+<strong>Vinzenz Gregor Eck</strong>, Expert Analytics<br>
+<!-- dom:AUTHOR: Leif Rune Hellevik at NTNU -->
+<!-- Author: --> <strong>Leif Rune Hellevik</strong>, NTNU</p>
+<p>Date: <strong>Jul 13, 2018</strong></p>
+
 </div>
 </div>
 </div>
@@ -11804,16 +11810,13 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="c1"># plot configuration</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plot configuration</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
 <span class="c1"># import seaborn as sns # sets another style</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
-
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">)</span>
 
 <span class="c1"># font = {&#39;family&#39; : &#39;sans-serif&#39;,</span>
@@ -11972,11 +11975,223 @@ coefficients with the MCM in the following manner:</p>
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Monte Carlo</span>
+<div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># sensitivity analytical values</span>
+    <span class="n">Sa</span><span class="p">,</span> <span class="n">Szw</span><span class="p">,</span> <span class="n">Sta</span> <span class="o">=</span> <span class="n">analytic_sensitivity_coefficients</span><span class="p">(</span><span class="n">zm</span><span class="p">,</span> <span class="n">wm</span><span class="p">)</span>
+ 
+
+    <span class="c1"># Monte Carlo</span>
     <span class="c1">#Ns_mc = 1000000 # Number of samples mc</span>
     <span class="n">Ns_mc</span> <span class="o">=</span> <span class="mi">10000</span> <span class="c1"># Number of samples mc</span>
     <span class="c1"># calculate sensitivity indices with mc</span>
     <span class="n">A_s</span><span class="p">,</span> <span class="n">B_s</span><span class="p">,</span> <span class="n">C_s</span><span class="p">,</span> <span class="n">f_A</span><span class="p">,</span> <span class="n">f_B</span><span class="p">,</span> <span class="n">f_C</span><span class="p">,</span> <span class="n">Smc</span><span class="p">,</span> <span class="n">Stmc</span> <span class="o">=</span> <span class="n">monte_carlo_sens_nonlin</span><span class="p">(</span><span class="n">Ns_mc</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+
+    <span class="c1"># compute with Polynomial Chaos</span>
+    <span class="n">Ns_pc</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
+    
+    <span class="c1"># calculate sensitivity indices with gpc</span>
+    <span class="n">Spc</span><span class="p">,</span> <span class="n">Stpc</span><span class="p">,</span> <span class="n">gpce_reg</span> <span class="o">=</span> <span class="n">polynomial_chaos_sens</span><span class="p">(</span><span class="n">Ns_pc</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">polynomial_order</span><span class="p">,</span><span class="n">return_reg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># compare the computations</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="n">row_labels</span>  <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">N_terms</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">S</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">Sa</span><span class="p">,</span><span class="n">Spc</span><span class="p">,</span><span class="n">Smc</span><span class="p">,</span><span class="n">Sta</span><span class="p">,</span><span class="n">Stpc</span><span class="p">,</span><span class="n">Stmc</span><span class="p">))</span>
+    <span class="n">S_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sa&#39;</span><span class="p">,</span><span class="s1">&#39;Spc&#39;</span><span class="p">,</span><span class="s1">&#39;Smc&#39;</span><span class="p">,</span><span class="s1">&#39;Sta&#39;</span><span class="p">,</span><span class="s1">&#39;Stpc&#39;</span><span class="p">,</span><span class="s1">&#39;Stmc&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span>  
+    <span class="nb">print</span><span class="p">(</span><span class="n">S_table</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># Second order indices with gpc</span>
+    
+    <span class="n">S2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m2</span><span class="p">(</span><span class="n">gpce_reg</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span> <span class="c1"># second order indices with gpc</span>
+    
+    <span class="c1"># print all second order indices</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">S2</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">row_labels</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="n">row_labels</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    
+    <span class="c1"># sum all second order indices </span>
+    <span class="n">SumS2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">S2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Sum Sij = </span><span class="si">{:2.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SumS2</span><span class="p">))</span>
+    
+    <span class="c1"># sum all first and second order indices</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sum Si + Sij = </span><span class="si">{:2.2f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Spc</span><span class="p">)</span><span class="o">+</span><span class="n">SumS2</span><span class="p">))</span>
+    
+    <span class="c1"># compare nonzero second order indices with analytical indices </span>
+    <span class="n">Szw_pc</span><span class="o">=</span><span class="p">[</span><span class="n">S2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">N_terms</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_terms</span><span class="p">)</span> <span class="p">]</span>
+    <span class="n">Szw_table</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">Szw_pc</span><span class="p">,</span><span class="n">Szw</span><span class="p">,(</span><span class="n">Szw_pc</span><span class="o">-</span><span class="n">Szw</span><span class="p">)</span><span class="o">/</span><span class="n">Szw</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Szw_table</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Szw&#39;</span><span class="p">,</span><span class="s1">&#39;Szw pc&#39;</span><span class="p">,</span><span class="s1">&#39;Error%&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    
+    <span class="c1"># end second order</span>
+    <span class="n">convergence_analysis</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">convergence_analysis</span><span class="p">:</span>
+        <span class="c1"># Convergence analysis</span>
+        <span class="c1"># Convergence Monte Carlo with random sampling</span>
+        <span class="n">list_of_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">500000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">])</span>
+        <span class="n">s_mc_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">),</span> <span class="n">N_prms</span><span class="p">))</span>
+        <span class="n">st_mc_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">),</span> <span class="n">N_prms</span><span class="p">))</span>
+        <span class="c1"># average over</span>
+        <span class="n">N_iter</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MC convergence analysis:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">N_smpl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    N_smpl </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">N_smpl</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_iter</span><span class="p">):</span>
+                <span class="n">A_s</span><span class="p">,</span> <span class="n">XB</span><span class="p">,</span> <span class="n">XC</span><span class="p">,</span> <span class="n">Y_A</span><span class="p">,</span> <span class="n">Y_B</span><span class="p">,</span> <span class="n">Y_C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">ST</span> <span class="o">=</span> <span class="n">monte_carlo_sens_nonlin</span><span class="p">(</span><span class="n">N_smpl</span><span class="p">,</span>
+                                                                                <span class="n">jpdf</span><span class="p">,</span>
+                                                                                <span class="n">sample_method</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+                <span class="n">s_mc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">Sa</span><span class="p">)</span>
+                <span class="n">st_mc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ST</span> <span class="o">-</span> <span class="n">Sta</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         finished with iteration </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">))</span>
+            <span class="n">s_mc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N_iter</span><span class="p">)</span>
+            <span class="n">st_mc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N_iter</span><span class="p">)</span>
+        <span class="c1"># Plot results for monte carlo</span>
+        <span class="n">fig_random</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;Random sampling - average of indices&#39;</span><span class="p">)</span>
+        <span class="n">fig_random</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Random sampling - average of indices&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;First order sensitivity indices&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s_mc_err</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+
+        <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Total sensitivity indices&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">st_mc_err</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Plot results for monte carlo figure individual</span>
+        <span class="n">fig_random</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;Random sampling&#39;</span><span class="p">)</span>
+        <span class="n">fig_random</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Random sampling&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">s_e</span><span class="p">,</span> <span class="n">st_e</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s_mc_err</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">st_mc_err</span><span class="o">.</span><span class="n">T</span><span class="p">)):</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;First order sensitivity indices&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">s_e</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+            <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Total sensitivity indices&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">st_e</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ST_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="c1"># Convergence Polynomial Chaos</span>
+        <span class="n">list_of_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">140</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">220</span><span class="p">])</span>
+        <span class="n">s_pc_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">),</span> <span class="n">N_prms</span><span class="p">))</span>
+        <span class="n">st_pc_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">),</span> <span class="n">N_prms</span><span class="p">))</span>
+        <span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="c1"># average over</span>
+        <span class="n">N_iter</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PC convergence analysis:&#39;</span><span class="p">)</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">N_smpl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    N_smpl </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">N_smpl</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_iter</span><span class="p">):</span>
+                <span class="c1"># calculate sensitivity indices</span>
+                <span class="n">Spc</span><span class="p">,</span> <span class="n">Stpc</span> <span class="o">=</span> <span class="n">polynomial_chaos_sens</span><span class="p">(</span><span class="n">N_smpl</span><span class="p">,</span> <span class="n">jpdf</span><span class="p">,</span> <span class="n">polynomial_order</span><span class="p">,</span> <span class="n">poly</span><span class="p">)</span>
+                <span class="n">s_pc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Spc</span> <span class="o">-</span> <span class="n">Sa</span><span class="p">)</span>
+                <span class="n">st_pc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Stpc</span> <span class="o">-</span> <span class="n">Sta</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         finished with iteration </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">))</span>
+            <span class="n">s_pc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N_iter</span><span class="p">)</span>
+            <span class="n">st_pc_err</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N_iter</span><span class="p">)</span>
+
+        <span class="c1"># Plot results for polynomial chaos</span>
+        <span class="n">fig_random</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;Polynomial Chaos - average of indices&#39;</span><span class="p">)</span>
+        <span class="n">fig_random</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Polynomial Chaos - average of indices&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;First order sensitivity indices&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s_pc_err</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+
+        <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Total sensitivity indices&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">st_pc_err</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Plot results for polynomial chaos individual</span>
+        <span class="n">fig_random</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;Polynomial Chaos&#39;</span><span class="p">)</span>
+        <span class="n">fig_random</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Polynomial Chaos&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">s_e</span><span class="p">,</span> <span class="n">st_e</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s_pc_err</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">st_pc_err</span><span class="o">.</span><span class="n">T</span><span class="p">)):</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;First order sensitivity indices&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">,</span> <span class="n">s_e</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+            <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Total sensitivity indices&#39;</span><span class="p">)</span>
+            <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_of_samples</span><span class="p">,</span> <span class="n">st_e</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ST_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+            <span class="n">ax1</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;abs error&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of samples [1e3]&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="c1"># # Convergence Monte Carlo with sobol sampling</span>
+        <span class="c1"># list_of_samples = np.array([10000, 50000, 100000, 500000, 1000000])</span>
+        <span class="c1"># s_mc_err = np.zeros((len(list_of_samples), N_prms))</span>
+        <span class="c1"># st_mc_err = np.zeros((len(list_of_samples), N_prms))</span>
+        <span class="c1"># # average over</span>
+        <span class="c1"># N_iter = 10</span>
+        <span class="c1"># for i, N_smpl in enumerate(list_of_samples):</span>
+        <span class="c1">#     for j in range(N_iter):</span>
+        <span class="c1">#         A_s, XB, XC, Y_A, Y_B, Y_C, S, ST = monte_carlo_sens(N_smpl,</span>
+        <span class="c1">#                                                                  jpdf,</span>
+        <span class="c1">#                                                                  sample_method=&#39;S&#39;)</span>
+        <span class="c1">#         s_mc_err[i] += np.abs(S - Sa)</span>
+        <span class="c1">#         st_mc_err[i] += np.abs(ST - Sta)</span>
+        <span class="c1">#</span>
+                <span class="c1"># print(&#39;MC convergence analysis: N_smpl {} - finished with iteration {} of {}&#39;.format(N_smpl, 1 + j, N_iter))</span>
+        <span class="c1">#     s_mc_err[i] /= float(N_iter)</span>
+        <span class="c1">#     st_mc_err[i] /= float(N_iter)</span>
+        <span class="c1">#</span>
+        <span class="c1"># fig_sobol = plt.figure(&#39;Sobol sampling&#39;)</span>
+        <span class="c1"># fig_sobol.suptitle(&#39;Sobol sampling&#39;)</span>
+        <span class="c1"># for l, (s_e, st_e) in enumerate(zip(s_mc_err.T, st_mc_err.T)):</span>
+        <span class="c1">#     ax = plt.subplot(1, 2, 1)</span>
+        <span class="c1">#     plt.title(&#39;First order sensitivity indices&#39;)</span>
+        <span class="c1">#     plt.plot(list_of_samples/1000, s_e, &#39;-&#39;, label=&#39;S_{}&#39;.format(l))</span>
+        <span class="c1">#     ax.set_yscale(&#39;log&#39;)</span>
+        <span class="c1">#     plt.ylabel(&#39;abs error&#39;)</span>
+        <span class="c1">#     plt.xlabel(&#39;number of samples [1e3]&#39;)</span>
+        <span class="c1">#     plt.legend()</span>
+        <span class="c1">#</span>
+        <span class="c1">#     ax1 = plt.subplot(1, 2, 2)</span>
+        <span class="c1">#     plt.title(&#39;Total sensitivity indices&#39;)</span>
+        <span class="c1">#     plt.plot(list_of_samples/1000, st_e, &#39;-&#39;, label=&#39;ST_{}&#39;.format(l))</span>
+        <span class="c1">#     ax1.set_yscale(&#39;log&#39;)</span>
+        <span class="c1">#     plt.ylabel(&#39;abs error&#39;)</span>
+        <span class="c1">#     plt.xlabel(&#39;number of samples [1e3]&#39;)</span>
+        <span class="c1">#     plt.legend()</span>
+        <span class="c1">#</span>
+        <span class="c1"># fig_random = plt.figure(&#39;Sobol sampling - average of indices&#39;)</span>
+        <span class="c1"># fig_random.suptitle(&#39;Sobol sampling - average of indices&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1"># ax = plt.subplot(1, 2, 1)</span>
+        <span class="c1"># plt.title(&#39;First order sensitivity indices&#39;)</span>
+        <span class="c1"># plt.plot(list_of_samples / 1000, np.sum(s_mc_err, axis=1), &#39;-&#39;)</span>
+        <span class="c1"># ax.set_yscale(&#39;log&#39;)</span>
+        <span class="c1"># plt.ylabel(&#39;abs error&#39;)</span>
+        <span class="c1"># plt.xlabel(&#39;number of samples [1e3]&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1"># ax1 = plt.subplot(1, 2, 2)</span>
+        <span class="c1"># plt.title(&#39;Total sensitivity indices&#39;)</span>
+        <span class="c1"># plt.plot(list_of_samples / 1000, np.sum(st_mc_err, axis=1), &#39;-&#39;)</span>
+        <span class="c1"># ax1.set_yscale(&#39;log&#39;)</span>
+        <span class="c1"># plt.ylabel(&#39;abs error&#39;)</span>
+        <span class="c1"># plt.xlabel(&#39;number of samples [1e3]&#39;)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12062,14 +12277,14 @@ There are many adaptations and improvements of the algorithm available, here we 
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\mathbb{A} =
+\mathbf{A} =
 \begin{bmatrix}
 z_1^{(A,1)} &amp; \cdots z_i^{(A,1)} \cdots &amp; z_P^{(A,1)} \\
 \vdots &amp;            &amp; \vdots \\
 z_i^{(A,M)} &amp; \cdots z_i^{(A,M)} \cdots &amp; z_P^{(A,M)}
 \end{bmatrix}
 , \quad
-\mathbb{B} =
+\mathbf{B} =
 \begin{bmatrix}
 z_1^{(B,1)} &amp; \cdots z_i^{(B,1)} \cdots &amp; z_P^{(B,1)} \\
 \vdots &amp;            &amp; \vdots \\
@@ -12097,7 +12312,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\mathbb{C}_i =
+\mathbf{C}_i =
 \begin{bmatrix}
 z_1^{(B,1)} &amp; \cdots z_i^{(A,1)} \cdots &amp; z_P^{(B,1)} \\
 \vdots &amp;            &amp; \vdots \\
@@ -12150,8 +12365,8 @@ $$</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Step-2:-evaluate-the-model-for-samples">Step 2: evaluate the model for samples<a class="anchor-link" href="#Step-2:-evaluate-the-model-for-samples">&#182;</a></h3><p>In the second step we evaluate the model for samples in the matrices
-and save the results in vectors $Y_{\mathbb{A}}$, $Y_{\mathbb{B}}$ and
-$Y_{\mathbb{C_i}}$:</p>
+and save the results in vectors $Y_{\mathbf{A}}$, $Y_{\mathbf{B}}$ and
+$Y_{\mathbf{C_i}}$:</p>
 
 </div>
 </div>
@@ -12162,7 +12377,7 @@ $Y_{\mathbb{C_i}}$:</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-Y_{\mathbb{A}} = y(\mathbb{A}), \qquad Y_{\mathbb{B}} = y(\mathbb{B}), \qquad  Y_{\mathbb{C_i}} = y(\mathbb{C_i}),
+Y_{\mathbf{A}} = y(\mathbf{A}), \qquad Y_{\mathbf{B}} = y(\mathbf{B}), \qquad  Y_{\mathbf{C_i}} = y(\mathbf{C_i}),
 \end{align*}
 $$</p>
 
@@ -12255,7 +12470,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\operatorname{Var}(Y) = \left(\frac{1}{M-1} \sum_{j=1}^M \left(y_{\mathbb{B}}^j\right)^2\right) - f_0^2
+\operatorname{Var}(Y) = \left(\frac{1}{M-1} \sum_{j=1}^M \left(y_{\mathbf{B}}^j\right)^2\right) - f_0^2
 \end{align*}
 $$</p>
 
@@ -12278,7 +12493,7 @@ For $f_0^2$ exist several approximations, two common are:</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-f_0^2 =  \frac{1}{M^2} \left(\sum_{j=1}^M y_{\mathbb{A}}^j \right) \left(  \sum_{j=1}^M y_{\mathbb{B}}^j \right)
+f_0^2 =  \frac{1}{M^2} \left(\sum_{j=1}^M y_{\mathbf{A}}^j \right) \left(  \sum_{j=1}^M y_{\mathbf{B}}^j \right)
 \end{align*}
 $$</p>
 
@@ -12300,7 +12515,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\operatorname{Var}\left(\mathbb{E}(Y)| Z_i \right) = \frac{1}{M-1} \sum_{j=1}^M y_{\mathbb{A}}^j y_{\mathbb{C_i}}^j - f_0^2
+\operatorname{Var}\left(\mathbb{E}(Y)| Z_i \right) = \frac{1}{M-1} \sum_{j=1}^M y_{\mathbf{A}}^j y_{\mathbf{C_i}}^j - f_0^2
 \end{align*}
 $$</p>
 
@@ -12343,7 +12558,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\operatorname{Var}(Y) = \left(\frac{1}{M-1} \sum_{j=1}^M \left(y_{\mathbb{A}}^j\right)^2\right) - f_0^2
+\operatorname{Var}(Y) = \left(\frac{1}{M-1} \sum_{j=1}^M \left(y_{\mathbf{A}}^j\right)^2\right) - f_0^2
 \end{align*}
 $$</p>
 
@@ -12365,7 +12580,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-f_0^2 =  \frac{1}{M^2} \left(\sum_{j=1}^M y_{\mathbb{A}}^j \right)
+f_0^2 =  \frac{1}{M^2} \left(\sum_{j=1}^M y_{\mathbf{A}}^j \right)
 \end{align*}
 $$</p>
 
@@ -12387,7 +12602,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>$$
 \begin{align*}
-\operatorname{Var}\left(\mathbb{E}(Y)| \mathbf{Z}_{-i} \right) = \left(\frac{1}{M-1} \sum_{j=1}^M y_{\mathbb{B}}^j y_{\mathbb{C_i}}^j\right) - f_0^2
+\operatorname{Var}\left(\mathbb{E}(Y)| \mathbf{Z}_{-i} \right) = \left(\frac{1}{M-1} \sum_{j=1}^M y_{\mathbf{B}}^j y_{\mathbf{C_i}}^j\right) - f_0^2
 \end{align*}
 $$</p>
 

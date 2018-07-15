@@ -11779,7 +11779,13 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- dom:TITLE: A practical introduction to polynomial chaos with the chaospy package --></p>
-<h1 id="A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">A practical introduction to polynomial chaos with the chaospy package<a class="anchor-link" href="#A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">&#182;</a></h1>
+<h1 id="A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">A practical introduction to polynomial chaos with the chaospy package<a class="anchor-link" href="#A-practical-introduction-to-polynomial-chaos-with-the-chaospy-package">&#182;</a></h1><p><!-- dom:AUTHOR: Vinzenz Gregor Eck at Expert Analytics, Oslo -->
+<!-- Author: --><br>
+<strong>Vinzenz Gregor Eck</strong>, Expert Analytics, Oslo<br>
+<!-- dom:AUTHOR: Jacob Sturdy at Department of Structural Engineering, NTNU -->
+<!-- Author: --> <strong>Jacob Sturdy</strong>, Department of Structural Engineering, NTNU</p>
+<p>Date: <strong>Jul 13, 2018</strong></p>
+
 </div>
 </div>
 </div>
@@ -11788,7 +11794,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># ipython magic</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ipython magic</span>
 <span class="o">%</span><span class="k">matplotlib</span> notebook
 <span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
@@ -11804,16 +11810,13 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="c1"># plot configuration</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plot configuration</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
 <span class="c1"># import seaborn as sns # sets another style</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
-
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">)</span>
 
 <span class="c1"># font = {&#39;family&#39; : &#39;sans-serif&#39;,</span>
@@ -11832,9 +11835,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">chaospy</span> <span class="kn">as</span> <span class="nn">cp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">chaospy</span> <span class="k">as</span> <span class="nn">cp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">LA</span>
 </pre></div>
 
 </div>
@@ -11846,21 +11849,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><div id="sec:introduction"></div><p>To conduct UQSA with the polynomial chaos (PC) method we use the
-python package <code>chaospy</code>.  This package includes many features and
-methods to apply non-intrusive polynomial chaos to any model with few
-lines of code.  Since, <code>chaospy</code> allows for convenient definition of
-random variables, calculation of joint distributions and generation of
-samples, we apply <code>chaospy</code> as well for the Monte Carlo method.</p>
-<p>In the following we will briefly describe the theory of polynomial
-chaos and give a practical step by step guide for the application of
-<code>chaospy</code>.</p>
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><div id="sec:introduction"></div><p>To conduct UQSA with the polynomial chaos (PC) method we use the python package <code>chaospy</code>.
+This package includes many features and methods to apply non-intrusive polynomial chaos to any model with
+few lines of code.
+Since, <code>chaospy</code> allows for convenient definition of random variables, calculation of joint distributions and generation of samples,
+we apply <code>chaospy</code> as well for the Monte Carlo method.</p>
+<p>In the following we will briefly describe the theory of polynomial chaos and give a practical step by step guide
+for the application of <code>chaospy</code>.</p>
 <h1 id="Polynomial-chaos">Polynomial chaos<a class="anchor-link" href="#Polynomial-chaos">&#182;</a></h1><div id="sec:polynomialChaos"></div><p>For a more in depth introduction to the polynomial chaos method see (<a href="#xiu_numerical_2010;@ smith_uncertainty_2013">[xiu_numerical_2010;@ smith_uncertainty_2013]</a>).</p>
-<h2 id="Concept">Concept<a class="anchor-link" href="#Concept">&#182;</a></h2><p>The main concept of polynomial chaos is to approximate the stochastic
-model response of a model with stochastic input as polynomial
-expansion relating the response to the inputs.  For simplicity, we
-consider a model function $f$ which takes random variables $\mathbf{Z}$ and
-non-random variables as spatial coordinates $x$ or time $t$, as input:</p>
+<h2 id="Concept">Concept<a class="anchor-link" href="#Concept">&#182;</a></h2><p>The main concept of polynomial chaos is to approximate the stochastic model response of a model with stochastic input as polynomial expansion relating the response to the inputs.
+For simplicity, we consider a model function $f$ which takes random variables $\mathbf{Z}$ and non-random variables as
+spatial coordinates $x$ or time $t$, as input:</p>
 
 </div>
 </div>
@@ -11997,7 +11996,7 @@ $$</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can use regression to achieve the relaxed condition that $y_{N}$ is "sufficiently close" to $y$ at $\left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$.
-This is done by choosing a larger number of samples so that (<a href="#eq:stochColl">eq:stochColl</a>) is over determined and
+This is done by choosing a larger number of samples so that (<a href="#eq:stochColl">3</a>) is over determined and
 then minimizing the appropriate error ${\lvert\lvert {y_{N} \rvert\rvert}-y}_{R}$ over $\left\{\mathbf{z}^{(s)}\right\}_{s=1}^{P}$.
 Ordinary least squares, Ridge-Regression, and Tikhonov-Regularization are all regression methods that may be applied to this problem.</p>
 <h3 id="Pseudo-spectral-projection">Pseudo-spectral projection<a class="anchor-link" href="#Pseudo-spectral-projection">&#182;</a></h3><p>Discrete projection refers to the approximation of coefficients for $y_{N} = \sum_{i=1}^{P} v_i \Phi_i$, by directly approximating the orthogonal projection coefficients</p>
@@ -12037,7 +12036,7 @@ $$</p>
 <p><!-- Equation labels as ordinary links --></p>
 <div id="eq:ps_error"></div><p>$$
 \begin{equation}
-{\lvert\lvert {y_{N} - y} \rvert\rvert} \leq {\lvert\lvert {\sum_{i=1} \rvert\rvert}^{P} v_i \Phi_i - y{} } + {\lvert\lvert {\sum_{i=1} \rvert\rvert}^{P} \left( v_i - \tilde{v}_i \right)\Phi_i}
+\lVert{y_{N} - y}\rVert \leq \lVert \sum_{i=1}^{P} v_i \Phi_i - y{} \rVert + \lVert {\sum_{i=1}^{P} \left( v_i - \tilde{v}_i \right)\Phi_i} \rVert
 \label{eq:ps_error} \tag{5}
 \end{equation}
 $$</p>
@@ -12067,7 +12066,7 @@ inserting the expansion into the definition of the measures.</p>
 <div id="eq:expectedValue_gPCE"></div><p>$$
 \begin{equation}
   \begin{aligned}
-    {\mathbb{E}}(Y) \approx {\int_{\Omega} \sum_{i=1}^{P} v_i \Phi_i(\mathbf{z dF_Z(\mathbf{z})})} = v_1.
+    {\mathbb{E}}(Y) \approx \int_{\Omega} \sum_{i=1}^{P} v_i \Phi_i(\mathbf{z}{}) dF_Z(\mathbf{z}) = v_1.
   \end{aligned}
     \label{eq:expectedValue_gPCE} \tag{6}
 \end{equation}
@@ -12192,7 +12191,7 @@ As shown in the following two examples:</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># show help for uniform distributions</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># show help for uniform distributions</span>
 cp.Uniform<span class="o">?</span>
 </pre></div>
 
@@ -12206,7 +12205,7 @@ cp.Uniform<span class="o">?</span>
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># show help for sample generation</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># show help for sample generation</span>
 cp.samplegen<span class="o">?</span>
 </pre></div>
 
@@ -12267,11 +12266,11 @@ The help function can be used to find out more about the required arguments, e.g
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># simple distributions</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># simple distributions</span>
 <span class="n">rv1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">rv2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">rv3</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Lognormal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">rv1</span><span class="p">,</span> <span class="n">rv2</span><span class="p">,</span> <span class="n">rv3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rv1</span><span class="p">,</span> <span class="n">rv2</span><span class="p">,</span> <span class="n">rv3</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12294,9 +12293,9 @@ can be constructed with the following command:</p>
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># joint distributions</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># joint distributions</span>
 <span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">rv1</span><span class="p">,</span> <span class="n">rv2</span><span class="p">,</span> <span class="n">rv3</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12318,10 +12317,10 @@ can be constructed with the following command:</p>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># creating iid variables</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># creating iid variables</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">()</span>
 <span class="n">Y</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Iid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12383,7 +12382,7 @@ The <em>three terms recursion</em> method is then also called <strong>discretize
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example orthogonalization schemes</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example orthogonalization schemes</span>
 <span class="c1"># a normal random variable</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -12391,21 +12390,21 @@ The <em>three terms recursion</em> method is then also called <strong>discretize
 <span class="c1"># the polynomial order of the orthogonal polynomials</span>
 <span class="n">polynomial_order</span> <span class="o">=</span> <span class="mi">3</span>
 
-<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_chol</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Cholesky decomposition {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_chol</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cholesky decomposition </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Cholesky decomposition&#39;</span><span class="p">)</span>
 <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
 
-<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Discretized Stieltjes / Thre terms reccursion {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Discretized Stieltjes / Three terms reccursion </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Discretized Stieltjes &#39;</span><span class="p">)</span>
 <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_gs</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Modified Gram-Schmidt {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_gs</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Modified Gram-Schmidt </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Modified Gram-Schmidt&#39;</span><span class="p">)</span>
 <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">poly</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -12441,7 +12440,7 @@ method can be used to generate as set of samples:</p>
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># sampling in chaospy</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sampling in chaospy</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 u.sample<span class="o">?</span>
 </pre></div>
@@ -12466,7 +12465,7 @@ The following example shows the creation of 2 set of samples for the sampling sc
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sampling</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example sampling</span>
 <span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
@@ -12526,7 +12525,7 @@ The following example shows the creation of 2 set of samples for the sampling sc
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example save samples to file</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example save samples to file</span>
 <span class="c1"># Creates a csv file where each row corresponds to the sample number and each column with teh variables in the joint distribution</span>
 <span class="n">csv_file</span> <span class="o">=</span> <span class="s2">&quot;csv_samples.csv&quot;</span>
 <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
@@ -12555,7 +12554,7 @@ The following example shows the creation of 2 set of samples for the sampling sc
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example load samples from file</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example load samples from file</span>
 <span class="c1"># loads a csv file where the samples/or model evaluations for each sample are saved</span>
 <span class="c1"># with one sample per row. Multiple components ofoutput can be stored as separate columns </span>
 <span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;external_evaluations.csv&quot;</span>
@@ -12581,7 +12580,7 @@ The following example shows the creation of 2 set of samples for the sampling sc
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># linear regression in chaospy</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># linear regression in chaospy</span>
 cp.fit_regression<span class="o">?</span>
 </pre></div>
 
@@ -12655,7 +12654,7 @@ linear regression:</p>
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example linear regression</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example linear regression</span>
 <span class="c1"># 1. define marginal and joint distributions</span>
 <span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
@@ -12666,7 +12665,7 @@ linear regression:</p>
 <span class="n">poly</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">orth_ttr</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 
 <span class="c1"># 3.1 generate samples</span>
-<span class="n">number_of_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">cp</span><span class="o">.</span><span class="n">bertran</span><span class="o">.</span><span class="n">terms</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">))</span>
+<span class="n">number_of_samples</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">bertran</span><span class="o">.</span><span class="n">terms</span><span class="p">(</span><span class="n">polynomial_order</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">joint_distribution</span><span class="p">))</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">joint_distribution</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
 
 <span class="c1"># 3.2 evaluate the simple model for all samples</span>
@@ -12674,7 +12673,7 @@ linear regression:</p>
 
 <span class="c1"># 3.3 use regression to generate the polynomial chaos expansion</span>
 <span class="n">gpce_regression</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_regression</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">model_evaluations</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12697,7 +12696,7 @@ method can be used to generate nodes and weights for different quadrature method
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># quadrature in polychaos</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># quadrature in polychaos</span>
 cp.generate_quadrature<span class="o">?</span>
 </pre></div>
 
@@ -12723,7 +12722,7 @@ for Optimal Gaussian quadrature and Clenshaw-Curtis quadrature.</p>
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example quadrature</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example quadrature</span>
 <span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
@@ -12733,8 +12732,8 @@ for Optimal Gaussian quadrature and Clenshaw-Curtis quadrature.</p>
 <span class="n">nodes_gaussian</span><span class="p">,</span> <span class="n">weights_gaussian</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
 <span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">weights_clenshaw</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes gaussian quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_gaussian</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes gaussian quadrature: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_gaussian</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
 
 
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -12779,17 +12778,18 @@ It is also possible to use sparse grid quadrature. For this purpose Clenshaw-Cur
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sparse grid quadrature</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example sparse grid quadrature</span>
 <span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">joint_distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">J</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
 
 <span class="n">order</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1"># sparse grid has exponential growth, thus a smaller order results in more points</span>
 <span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">weights_clenshaw</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-<span class="n">nodes_clenshaw_sparse</span><span class="p">,</span> <span class="n">weights_clenshaw_sparse</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">nodes_clenshaw_sparse</span><span class="p">,</span> <span class="n">weights_clenshaw_sparse</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">generate_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">joint_distribution</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes normal clenshaw-curtis quadrature: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature with sparse grid : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw_sparse</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes normal clenshaw-curtis quadrature: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of nodes clenshaw-curtis quadrature with sparse grid : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_clenshaw_sparse</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
 
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">nodes_clenshaw</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -12818,7 +12818,7 @@ It is also possible to use sparse grid quadrature. For this purpose Clenshaw-Cur
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># spectral projection in chaospy</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># spectral projection in chaospy</span>
 cp.fit_quadrature<span class="o">?</span>
 </pre></div>
 
@@ -12882,7 +12882,7 @@ $$</p>
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example spectral projection</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example spectral projection</span>
 <span class="c1"># 1. define marginal and joint distributions</span>
 <span class="n">u1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u2</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
@@ -12901,7 +12901,7 @@ $$</p>
 
 <span class="c1"># 4.3 use quadrature to generate the polynomial chaos expansion</span>
 <span class="n">gpce_quadrature</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">fit_quadrature</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">model_evaluations</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Success&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12954,7 +12954,7 @@ the <strong>joint-distribution</strong> (see also example below).</p>
 <div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example uq</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example uq</span>
 <span class="n">exp_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 <span class="n">exp_ps</span> <span class="o">=</span>  <span class="n">cp</span><span class="o">.</span><span class="n">E</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 
@@ -12964,14 +12964,14 @@ the <strong>joint-distribution</strong> (see also example below).</p>
 <span class="n">prediction_interval_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Perc</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">joint_distribution</span><span class="p">)</span>
 <span class="n">prediction_interval_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Perc</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="n">joint_distribution</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Expected values   Standard deviation            90 % Prediction intervals</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39; E_reg |  E_ps     std_reg |  std_ps                pred_reg |  pred_ps&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;  {} | {}       {:&gt;6.3f} | {:&gt;6.3f}       {} | {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exp_reg</span><span class="p">,</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected values   Standard deviation            90 % Prediction intervals</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; E_reg |  E_ps     std_reg |  std_ps                pred_reg |  pred_ps&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{}</span><span class="s1"> | </span><span class="si">{}</span><span class="s1">       </span><span class="si">{:&gt;6.3f}</span><span class="s1"> | </span><span class="si">{:&gt;6.3f}</span><span class="s1">       </span><span class="si">{}</span><span class="s1"> | </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exp_reg</span><span class="p">,</span>
                                                                   <span class="n">exp_ps</span><span class="p">,</span>
                                                                   <span class="n">std_reg</span><span class="p">,</span>
                                                                   <span class="n">str_ps</span><span class="p">,</span>
-                                                                  <span class="p">[</span><span class="s2">&quot;{:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_reg</span><span class="p">],</span>
-                                                                  <span class="p">[</span><span class="s2">&quot;{:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_ps</span><span class="p">]))</span>
+                                                                  <span class="p">[</span><span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_reg</span><span class="p">],</span>
+                                                                  <span class="p">[</span><span class="s2">&quot;</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction_interval_ps</span><span class="p">]))</span>
 </pre></div>
 
 </div>
@@ -13003,17 +13003,17 @@ The <code>chaospy</code> package provides the following methods:</p>
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># example sens</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># example sens</span>
 <span class="n">sensFirst_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 <span class="n">sensFirst_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_m</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 
 <span class="n">sensT_reg</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_t</span><span class="p">(</span><span class="n">gpce_regression</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 <span class="n">sensT_ps</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Sens_t</span><span class="p">(</span><span class="n">gpce_quadrature</span><span class="p">,</span> <span class="n">joint_distribution</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;First Order Indices           Total Sensitivity Indices</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;       S_reg |  S_ps                 ST_reg |  ST_ps  </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First Order Indices           Total Sensitivity Indices</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       S_reg |  S_ps                 ST_reg |  ST_ps  </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">s_reg</span><span class="p">,</span> <span class="n">s_ps</span><span class="p">,</span> <span class="n">st_reg</span><span class="p">,</span> <span class="n">st_ps</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sensFirst_reg</span><span class="p">,</span> <span class="n">sensFirst_ps</span><span class="p">,</span> <span class="n">sensT_reg</span><span class="p">,</span> <span class="n">sensT_ps</span><span class="p">)):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;S_{} : {:&gt;6.3f} | {:&gt;6.3f}         ST_{} : {:&gt;6.3f} | {:&gt;6.3f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s_reg</span><span class="p">,</span> <span class="n">s_ps</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">st_reg</span><span class="p">,</span> <span class="n">st_ps</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;S_</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{:&gt;6.3f}</span><span class="s1"> | </span><span class="si">{:&gt;6.3f}</span><span class="s1">         ST_</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{:&gt;6.3f}</span><span class="s1"> | </span><span class="si">{:&gt;6.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">s_reg</span><span class="p">,</span> <span class="n">s_ps</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">st_reg</span><span class="p">,</span> <span class="n">st_ps</span><span class="p">))</span>
 </pre></div>
 
 </div>

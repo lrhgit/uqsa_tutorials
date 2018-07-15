@@ -11780,8 +11780,9 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!-- dom:TITLE: A practical introduction to sensitivity analysis --></p>
 <h1 id="A-practical-introduction-to-sensitivity-analysis">A practical introduction to sensitivity analysis<a class="anchor-link" href="#A-practical-introduction-to-sensitivity-analysis">&#182;</a></h1><p><!-- dom:AUTHOR: Leif Rune Hellevik at Department of Structural Engineering, NTNU -->
-<!-- Author: --> <strong>Leif Rune Hellevik</strong>, Department of Structural Engineering, NTNU</p>
-<p>Date: <strong>Oct 26, 2017</strong></p>
+<!-- Author: --><br>
+<strong>Leif Rune Hellevik</strong>, Department of Structural Engineering, NTNU</p>
+<p>Date: <strong>Jul 13, 2018</strong></p>
 
 </div>
 </div>
@@ -11807,9 +11808,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="c1"># plot configuration</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plot configuration</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;ggplot&quot;</span><span class="p">)</span>
@@ -11842,7 +11841,7 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">generate_sample_matrices_mc</span>
 <span class="kn">from</span> <span class="nn">monte_carlo</span> <span class="k">import</span> <span class="n">calculate_sensitivity_indices_mc</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">_operator</span> <span class="k">import</span> <span class="n">index</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">index</span>
 </pre></div>
 
 </div>
@@ -11854,6 +11853,120 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><div id="sec:introduction"></div><p>This practical introduction to sensitivity analysis is based on the
+presentation and examples found in <a href="#saltelli_global_2008">[saltelli_global_2008]</a>. To give
+the reader an even better hands on experience of the topic, we have
+integrated the computations in a python notebook format.</p>
+<p>Many sensitivity analyses reported in the literature are based on
+derivatives at set point or point of interest. Indeed such approaches
+are based on the fact that the derivative of $\partial Y_i/\partial
+X_j$ of quantity of interest $Y_i$ as a function of an input variable
+$X_j$ can be thought of as the mathematical definition of the
+sensitivity of $Y_i$ versus $X_j$.</p>
+<p>However, what is important to keep in mind is that local derivatives
+are only informative at the set point in the parameter space at which
+they are computed, and do not provide information for the rest of the
+parameter space. Naturally, such a linearisation will matter little
+for linear models, but for general, nonlinear models, care must be
+taken.  In particular this is important in situations when the input
+parameters are uncertain.</p>
+<h1 id="Local-versus-global-sensitivity-analysis">Local versus global sensitivity analysis<a class="anchor-link" href="#Local-versus-global-sensitivity-analysis">&#182;</a></h1><p>Motivation and useful purposes of sensitivity analysis</p>
+<ul>
+<li><p>Parameter prioritization of parameters of high sensitivity (importance)</p>
+</li>
+<li><p>Parameter fixation of parameters of low sensitivity (importance)</p>
+</li>
+<li><p>Reveal surprising relations/properties of the model</p>
+</li>
+<li><p>Indentify critical regions in the input parameter space</p>
+</li>
+</ul>
+<h2 id="Local-approaches-based-on-derivatives">Local approaches based on derivatives<a class="anchor-link" href="#Local-approaches-based-on-derivatives">&#182;</a></h2><p>Many sensitivity analyses found in the scientific literature are based
+on derivatives.  This fact has naturally a rational basis as the
+partial derivative $\partial y/\partial Z_i$ of a model predicion $y$
+with respect to an input $Z_i$, can be understood as the mathematical
+representation of the sensitivity of $y$ with respect to $Z_i$.</p>
+<p>Even though a local, partial derivative approach is computationally
+inexpensive it has in general limited usage for nonlinear models. The
+derivatives are linearizations of the model sensitivities around the
+point in the parameter space at which they are evaluated, and may only
+be extrapolated to provide information on the sensitivity in other
+regions of the parameter space in the case of a linear model.</p>
+<p>To illustrate the fraction of the parameter space one at maximum might
+explore with the local partial derivative approach (also called the
+one factor at the time (OAT) approach) we provide a code snippet which
+calculates the ratio of a <a href="https://en.wikipedia.org/wiki/N-sphere#Recurrences">hypersphere</a> to a hypercube.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># See https://en.wikipedia.org/wiki/N-sphere#Recurrences</span>
+
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interactive</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">hyperSphere_hyperCube_ratio</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">Vsphere</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Ssphere</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">Vcube</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">SphereCubeRatio</span><span class="o">=</span><span class="p">[]</span>
+
+    <span class="n">dims</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    
+       
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
+        <span class="n">Ssphere</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">Vsphere</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="n">Vsphere</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ssphere</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">Vcube</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">SphereCubeRatio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vsphere</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">Vcube</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dims</span><span class="p">,</span><span class="n">SphereCubeRatio</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of dimensions&#39;</span><span class="p">)</span>
+    <span class="n">_</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Hypersphere to hypercube volume ratio&#39;</span><span class="p">)</span>
+        
+<span class="n">interactive_plot</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="n">hyperSphere_hyperCube_ratio</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">interactive_plot</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">output</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s1">&#39;350px&#39;</span>
+<span class="n">interactive_plot</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<!-- dom:FIGURE: [figs/hypersphere.png, width=400 frac=0.7] Ratio of hypersphere volume to hypercube volume.  -->
+<!-- begin figure -->
+
+<p><p>Ratio of hypersphere volume to hypercube volume.</p>
+<img src="figs/hypersphere.png" width=400></p>
+<!-- end figure -->
+
+
+
+
+
+
+<p>Based on the brief motivation above we will present of methods based
+on the exploration of the input parameter space by judiciously
+selecting samples in that space. Such approaches result in more robust and
+informative sensitivity measures, than what would be the result from a local
+derivative app      roach at the center of the parameter space.</p>
+<p>To introduce the methods of sensitivity analysis, we shall
+start from derivatives and illustrate them on a very simple linear
+model.</p>
 <h1 id="A-simple-linear-model">A simple linear model<a class="anchor-link" href="#A-simple-linear-model">&#182;</a></h1><p>As an simple linear model example consider:</p>
 
 </div>
@@ -11880,7 +11993,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>where the input factors are $\mathbf{X} = (\Omega_1, \Omega_2, \ldots,
 \Omega_r, Z_1, Z_2, \ldots, Z_r)$. For simplicity we assume that the
-model output $Y$ of <a href="#eq:linear_model">(1)</a> is a single variable and
+model output $Y$ of (<a href="#eq:linear_model">1</a>) is a single variable and
 that the $\Omega s$ are fixed coefficients or weights.</p>
 
 </div>
@@ -11890,9 +12003,11 @@ that the $\Omega s$ are fixed coefficients or weights.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto1"></div><p>$$
 \begin{equation}
  \Omega_1=\Omega_2=\ldots=\text{constant}
+\label{_auto1} \tag{2}
 \end{equation}
 $$</p>
 
@@ -11903,7 +12018,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Consequently, the true factors of <a href="#eq:linear_model">(1)</a> are just
+<p>Consequently, the true factors of (<a href="#eq:linear_model">1</a>) are just
 $(Z_1, Z_2, \ldots, Z_r)$. The individual variables
 $Z_i$ are taken to normally distributed with mean zero</p>
 
@@ -11917,7 +12032,7 @@ $Z_i$ are taken to normally distributed with mean zero</p>
 <p><!-- Equation labels as ordinary links --></p>
 <div id="eq:NZi"></div><p>$$
 \begin{equation} Z_i \sim N(0, \sigma_{Z_i}), \qquad i=1,2, \ldots, r
-\label{eq:NZi} \tag{2} \end{equation}
+\label{eq:NZi} \tag{3} \end{equation}
 $$</p>
 
 </div>
@@ -11927,7 +12042,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As the predicted value $Y$ of the model in <a href="#eq:linear_model">(1)</a> is
+<p>As the predicted value $Y$ of the model in (<a href="#eq:linear_model">1</a>) is
 linear combination of normally distributed factors, it is easy to
 verify (see exercices in <a href="#saltelli_global_2008">[saltelli_global_2008]</a>) that $Y$ also will
 be normally distributed with:</p>
@@ -11943,7 +12058,7 @@ be normally distributed with:</p>
 <div id="eq:analytic_mean_std"></div><p>$$
 \begin{equation}
 \bar{y} = \sum_{i=1}^{r} \Omega_i \; \bar{z}_i, \qquad \sigma_Y = \sqrt{\sum_{i=1}^{r} \Omega_i^2 \, \sigma_{Z_i}^2}
-\label{eq:analytic_mean_std} \tag{3}    
+\label{eq:analytic_mean_std} \tag{4}    
 \end{equation}
 $$</p>
 
@@ -11964,9 +12079,11 @@ certain, i.e.:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto2"></div><p>$$
 \begin{equation}
  \sigma_{Z_1} &lt;  \sigma_{Z_2} &lt;  \ldots  &lt;  \sigma_{Z_r}
+\label{_auto2} \tag{5}
 \end{equation}
 $$</p>
 
@@ -11977,14 +12094,14 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Scatterplots-versus-derivatives">Scatterplots versus derivatives<a class="anchor-link" href="#Scatterplots-versus-derivatives">&#182;</a></h1><p>We have implemented the simple linear model in <a href="#eq:linear_model">(1)</a> in python as:</p>
+<h1 id="Scatterplots-versus-derivatives">Scatterplots versus derivatives<a class="anchor-link" href="#Scatterplots-versus-derivatives">&#182;</a></h1><p>We have implemented the simple linear model in (<a href="#eq:linear_model">1</a>) in python as:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start the linear model</span>
@@ -12011,7 +12128,7 @@ the standard deviation. The weights $\Omega_{1\ldots r}$ are stored in a numpy-v
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Set mean (column 0) and standard deviations (column 1) for each factor z. Nrv=nr. rows</span>
@@ -12059,7 +12176,7 @@ Z_{2,1} &amp; Z_{2,2}  &amp; \ldots &amp; Z_{2,N}\\
 Z_{r,1} &amp; Z_{r,2}  &amp; \ldots &amp; Z_{r,N}
 \end{array} 
 \right ]
-\label{eq:mc_sample} \tag{4}
+\label{eq:mc_sample} \tag{6}
 \end{equation}
 $$</p>
 
@@ -12070,8 +12187,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We may the compute a value of $Y$ from <a href="#eq:linear_model">(1)</a> for each
-column in <a href="#eq:mc_sample">(4)</a> to produce a solution vector
+<p>We may the compute a value of $Y$ from (<a href="#eq:linear_model">1</a>) for each
+column in (<a href="#eq:mc_sample">6</a>) to produce a solution vector
 $\mathbf{Y}$. Having sampled $N$ values from each input factor we may
 produce $r$ scatter plots, by projecting in turn the $N$ values of
 $\mathbf{Y}$ against the $N$ values of each of the $r$ input factors.</p>
@@ -12094,7 +12211,7 @@ y_2 \\
 y_N
 \end{array}
 \right ]
-\label{eq:mc_solution} \tag{5}
+\label{eq:mc_solution} \tag{7}
 \end{equation}
 $$</p>
 
@@ -12103,7 +12220,7 @@ $$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Generate distributions for each element in z and sample</span>
@@ -12182,7 +12299,7 @@ and that we may order the factors my influence on $Y$ as:</p>
 <div id="eq:scatter_plot_rank"></div><p>$$
 \begin{equation}
 Z_4 &gt; Z_3 &gt; Z_2 &gt; Z_1 
-\label{eq:scatter_plot_rank} \tag{6}
+\label{eq:scatter_plot_rank} \tag{8}
 \end{equation}
 $$</p>
 
@@ -12195,7 +12312,7 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Our intuitive notion of influence is based on that there is more shape
 (or better pattern) in the plot for $Z_4$ than for $Z_3$ and likewise.</p>
-<p>For our simple linear model in <a href="#eq:linear_model">(1)</a> we are in the
+<p>For our simple linear model in (<a href="#eq:linear_model">1</a>) we are in the
 fortunate situation that we may compute the local derivatives analyticaly:</p>
 
 </div>
@@ -12209,7 +12326,7 @@ fortunate situation that we may compute the local derivatives analyticaly:</p>
 <div id="eq:Sp"></div><p>$$
 \begin{equation}
 S_{Z_i}^{p} = \frac{\partial Y}{\partial Z_i} = \Omega_i
-\label{eq:Sp} \tag{7}
+\label{eq:Sp} \tag{9}
 \end{equation}
 $$</p>
 
@@ -12222,10 +12339,10 @@ $$</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In our code example we set all the $\Omega_i=2$ for $i=1,\ldots,4$,
 and according to the local sensitivity meansure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> all the input factors $Z_i$s are equally important and
+(<a href="#eq:Sp">9</a>) all the input factors $Z_i$s are equally important and
 independent of the variation of each factor. This measure is clearly
 at odds with the ranking of influence based on the scatterplots in
-<a href="#eq:scatter_plot_rank">(6)</a> and is an indication of the usefullness of
+(<a href="#eq:scatter_plot_rank">8</a>) and is an indication of the usefullness of
 scatterplots in sensititivy analysis. However, the bidimensional
 scatterplots may in some cases be deceiving and lead to type II
 errors (i.e. failure to identify influential parameters). ref to Saltelli 2004...</p>
@@ -12237,7 +12354,7 @@ factors. Another challenge with scatterplots is that sensitivities for
 sets cannot be visualized, while luckily compact sensitivity measures may be
 defined in such cases.</p>
 <h1 id="Normalized-derivatives">Normalized derivatives<a class="anchor-link" href="#Normalized-derivatives">&#182;</a></h1><p>A simple way to improve the derivative sensitivity measure $S_{Z_i}^{p}$ in
-<a href="#eq:Sp">(7)</a> is to scale the input-output variables with their standard deviations:</p>
+(<a href="#eq:Sp">9</a>) is to scale the input-output variables with their standard deviations:</p>
 
 </div>
 </div>
@@ -12250,7 +12367,7 @@ defined in such cases.</p>
 <div id="eq:Ss"></div><p>$$
 \begin{equation}
 S_{Z_i}^{\sigma} = \frac{\partial Y/\sigma_Y}{\partial Z_i/\sigma_{Z_i}} = \frac{\sigma_{Z_i}}{\sigma_{Y}} \; \frac{\partial Y}{\partial Z_i}
-\label{eq:Ss} \tag{8}
+\label{eq:Ss} \tag{10}
 \end{equation}
 $$</p>
 
@@ -12261,8 +12378,8 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In case of our simple linear model <a href="#eq:linear_model">(1)</a> we get from
-<a href="#eq:Ss">(8)</a>:</p>
+<p>In case of our simple linear model (<a href="#eq:linear_model">1</a>) we get from
+(<a href="#eq:Ss">10</a>):</p>
 
 </div>
 </div>
@@ -12275,7 +12392,7 @@ $$</p>
 <div id="eq:Ss_simple"></div><p>$$
 \begin{equation}
 \left (S_{Z_i}^{\sigma} \right)^2 = \left( \frac{\sigma_{Z_i}}{\sigma_{Y}}\right)^2 \; \left (\frac{\partial Y}{\partial Z_i}\right)^2 = \left( \frac{\sigma_{Z_i}\, \Omega_i}{\sigma_{Y}}\right)^2 \;  \qquad \textsf{which may be rearranged to:} \qquad \sigma_y^2 \, (S_{Z_i}^{\sigma})^2 = \left ( \Omega_{i} \sigma_{Y} \right )^2
-\label{eq:Ss_simple} \tag{9}
+\label{eq:Ss_simple} \tag{11}
 \end{equation}
 $$</p>
 
@@ -12286,7 +12403,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Based on the linearity of our model we previously found  <a href="#eq:analytic_mean_std">(3)</a> which also yields:</p>
+<p>Based on the linearity of our model we previously found  (<a href="#eq:analytic_mean_std">4</a>) which also yields:</p>
 
 </div>
 </div>
@@ -12299,7 +12416,7 @@ $$</p>
 <div id="eq:Ss_model_ded"></div><p>$$
 \begin{equation}
  \sigma_Y^2 = \sum_{i=1}^{r} \left(\Omega_i^2 \, \sigma_{Z_i}\right)^2
- \label{eq:Ss_model_ded} \tag{10}
+\label{eq:Ss_model_ded} \tag{12}
 \end{equation}
 $$</p>
 
@@ -12310,7 +12427,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As both <a href="#eq:Ss_model_ded">(10)</a> and <a href="#eq:Ss_simple">(9)</a> must hold simultaneously we get</p>
+<p>As both (<a href="#eq:Ss_model_ded">12</a>) and (<a href="#eq:Ss_simple">11</a>) must hold simultaneously we get</p>
 
 </div>
 </div>
@@ -12323,7 +12440,7 @@ $$</p>
 <div id="eq:Ss1"></div><p>$$
 \begin{equation}
 \left (S_{Z_i}^{\sigma} \right)^2=1 
-\label{eq:Ss1} \tag{11}
+\label{eq:Ss1} \tag{13}
 \end{equation}
 $$</p>
 
@@ -12334,9 +12451,9 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The normalized derivative measure of sensitivity in <a href="#eq:Ss">(8)</a> is
-more convincing than <a href="#eq:Sp">(7)</a>: first, as it involves both the
-weights $\Omega_i$ and the factors $Z_i$ in <a href="#eq:linear_model">(1)</a>;
+<p>The normalized derivative measure of sensitivity in (<a href="#eq:Ss">10</a>) is
+more convincing than (<a href="#eq:Sp">9</a>): first, as it involves both the
+weights $\Omega_i$ and the factors $Z_i$ in (<a href="#eq:linear_model">1</a>);
 second as the measures are properly scaled and summarizes to one,
 which allows for an easy interpretation of the output sensitivity with
 respect to each of the input factors.</p>
@@ -12346,7 +12463,7 @@ respect to each of the input factors.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Theoretical sensitivity indices</span>
@@ -12378,7 +12495,7 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1">#  Expectation and variance from sampled values</span>
@@ -12399,7 +12516,7 @@ i.e. $N$, and see how $N$ influence the estimates.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Note that <code>Ns</code> is the size of our Monte Carlo experiment, corresponding
 to the number of times we have evaluated our simple linear model
-<a href="#eq:linear_model">(1)</a>. The evaluation of the model is normally the
+(<a href="#eq:linear_model">1</a>). The evaluation of the model is normally the
 most computationally expensive part of the analysis, and for that
 reasons <code>Ns</code> is referred to as the <code>cost</code> of the analysis.</p>
 <h1 id="Conditional-variances">Conditional variances<a class="anchor-link" href="#Conditional-variances">&#182;</a></h1><p>As noted previously, the importance of a factor $Z_i$ is manifested
@@ -12421,7 +12538,7 @@ lines at equidistant locations on each $Z_i$-axis, $i=1, \ldots,4$.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of data, z-slices, and linear model</span>
@@ -12483,9 +12600,11 @@ to all-but $Z_i$, which corresponds to the conditional expected value:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto3"></div><p>$$
 \begin{equation}
 E_{Z_{\sim i}} (Y\;|\;Z_i) 
+\label{_auto3} \tag{14}
 \end{equation}
 $$</p>
 
@@ -12507,9 +12626,11 @@ of $Z_i$ is given by the conditional variance:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto4"></div><p>$$
 \begin{equation}
 \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
+\label{_auto4} \tag{15}
 \end{equation}
 $$</p>
 
@@ -12533,7 +12654,7 @@ $$</p>
 <div id="eq:VarDecomp"></div><p>$$
 \begin{equation}
 \text{V}(Y) = E_{Z_i} ( V_{Z_{\sim i}} (Y \; | Z_{i})) + \text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))
-\label{eq:VarDecomp} \tag{12}
+\label{eq:VarDecomp} \tag{16}
 \end{equation}
 $$</p>
 
@@ -12555,9 +12676,11 @@ effect of $Z_i$ on $Y$, and its fraction of the total variation of $Y$ is expres
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$$
+<p><!-- Equation labels as ordinary links --></p>
+<div id="_auto5"></div><p>$$
 \begin{equation}
 S_i = \frac{\text{V}_{Z_i}(E_{Z_{\sim i}} (Y\;|\;Z_i))}{\text{V}(Y)}
+\label{_auto5} \tag{17}
 \end{equation}
 $$</p>
 
@@ -12568,7 +12691,7 @@ $$</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By <a href="#eq:VarDecomp">(12)</a>, $S_i$ is number always in the range $[0,1]$,
+<p>By (<a href="#eq:VarDecomp">16</a>), $S_i$ is number always in the range $[0,1]$,
 and a high value implies an important factor.</p>
 
 </div>
@@ -12576,7 +12699,7 @@ and a high value implies an important factor.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># # Scatter plots of averaged y-values per slice, with averaged data</span>
@@ -12652,7 +12775,7 @@ UQ and SA with the Monte Carlo method</a>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate sens indices of non additive model</span>
@@ -12700,7 +12823,7 @@ UQ and SA with the Monte Carlo method</a>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Monte Carlo</span>
@@ -12734,7 +12857,7 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos computations</span>
@@ -12770,7 +12893,7 @@ the Soboil indices with the polynomial chaos expansions using <code>chaospy</cod
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span>    <span class="c1"># Polychaos convergence</span>
